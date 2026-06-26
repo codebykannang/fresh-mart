@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jaya Lakshmi Fresh Mart – Farm Fresh Delivered</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  :root{
+    --green:#16a34a;--green-light:#22c55e;--green-dark:#14532d;--green-soft:#dcfce7;
+    --yellow:#fbbf24;--orange:#fb923c;--red:#ef4444;--pink:#ec4899;--purple:#a855f7;
+    --sky:#38bdf8;--white:#fff;--gray50:#f9fafb;--gray100:#f3f4f6;--gray200:#e5e7eb;
+    --gray600:#4b5563;--gray800:#1f2937;--shadow:0 4px 24px rgba(22,163,74,.15);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',sans-serif;background:#fff;color:var(--gray800);overflow-x:hidden}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#f1f1f1}::-webkit-scrollbar-thumb{background:var(--green);border-radius:3px}
+
+  /* ---- ANIMATIONS ---- */
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeInLeft{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes fadeInRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes spin3d{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 12px rgba(34,197,94,0)}}
+  @keyframes shimmer{0%{background-position:-1000px 0}100%{background-position:1000px 0}}
+  @keyframes bounceIn{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.08)}70%{transform:scale(.95)}100%{transform:scale(1);opacity:1}}
+  @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+  @keyframes ripple{to{transform:scale(4);opacity:0}}
+  @keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  @keyframes leafSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+  @keyframes countUp{from{opacity:0}to{opacity:1}}
+
+  .fade-in-up{animation:fadeInUp .6s ease both}
+  .fade-in-left{animation:fadeInLeft .6s ease both}
+  .fade-in-right{animation:fadeInRight .6s ease both}
+  .float{animation:floatY 3s ease-in-out infinite}
+  .bounce-in{animation:bounceIn .7s cubic-bezier(.36,.07,.19,.97) both}
+  .pulse-btn{animation:pulse 2s infinite}
+
+  /* ---- 3D CARD ---- */
+  .card-3d{perspective:1000px;transform-style:preserve-3d}
+  .card-3d-inner{transition:transform .4s cubic-bezier(.4,0,.2,1)}
+  .card-3d:hover .card-3d-inner{transform:rotateY(8deg) rotateX(-4deg) scale(1.03)}
+
+  /* ---- TILT HOVER ---- */
+  .tilt{transition:transform .3s ease,box-shadow .3s ease}
+  .tilt:hover{transform:perspective(600px) rotateX(-4deg) rotateY(6deg) scale(1.04);box-shadow:8px 16px 40px rgba(0,0,0,.15)}
+
+  /* ---- GRADIENT BG ---- */
+  .hero-bg{background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 30%,#fef9c3 60%,#fff7ed 100%);background-size:400% 400%;animation:gradientShift 8s ease infinite}
+
+  /* ---- BUTTONS ---- */
+  .btn-primary{background:linear-gradient(135deg,var(--green),var(--green-light));color:#fff;border:none;padding:12px 28px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(22,163,74,.4)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-secondary{background:#fff;color:var(--green);border:2px solid var(--green);padding:10px 26px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all .3s}
+  .btn-secondary:hover{background:var(--green-soft);transform:translateY(-2px)}
+  .btn-danger{background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;border:none;padding:8px 18px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .3s}
+  .btn-danger:hover{transform:scale(1.05)}
+
+  /* ---- NAVBAR ---- */
+  .navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);box-shadow:0 2px 20px rgba(0,0,0,.06);animation:slideDown .4s ease}
+  .nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--green-dark)}
+  .nav-logo span{color:var(--yellow)}
+
+  /* ---- HERO ---- */
+  .hero-section{min-height:100vh;display:flex;align-items:center;padding-top:80px}
+  .hero-title{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,68px);font-weight:900;line-height:1.1;color:var(--green-dark)}
+  .hero-title span{color:var(--green-light)}
+
+  /* ---- PRODUCT CARDS ---- */
+  .product-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);transition:all .3s;cursor:pointer;position:relative}
+  .product-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 40px rgba(22,163,74,.2)}
+  .product-card-img{width:100%;height:200px;object-fit:cover;transition:transform .4s}
+  .product-card:hover .product-card-img{transform:scale(1.08)}
+
+  /* ---- CATEGORY PILLS ---- */
+  .cat-pill{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:50px;cursor:pointer;font-weight:700;font-size:14px;transition:all .3s;border:2px solid transparent}
+  .cat-pill.active,.cat-pill:hover{transform:scale(1.05)}
+
+  /* ---- TAGS / BADGES ---- */
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .badge-green{background:#dcfce7;color:#15803d}
+  .badge-yellow{background:#fef9c3;color:#92400e}
+  .badge-red{background:#fee2e2;color:#dc2626}
+  .badge-orange{background:#ffedd5;color:#c2410c}
+
+  /* ---- STARS ---- */
+  .stars{color:#fbbf24;font-size:16px;letter-spacing:2px}
+
+  /* ---- FORMS ---- */
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .form-label{font-weight:700;font-size:14px;color:var(--gray600)}
+  .form-input{padding:12px 16px;border:2px solid var(--gray200);border-radius:12px;font-family:'Nunito',sans-serif;font-size:15px;outline:none;transition:all .2s;background:#fafafa}
+  .form-input:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 4px rgba(34,197,94,.1)}
+
+  /* ---- PROGRESS TRACKER ---- */
+  .tracker-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;position:relative}
+  .tracker-step::before{content:'';position:absolute;top:20px;left:50%;width:100%;height:3px;background:var(--gray200);z-index:0}
+  .tracker-step:last-child::before{display:none}
+  .tracker-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;z-index:1;font-weight:900;border:3px solid}
+  .tracker-circle.done{background:var(--green);color:#fff;border-color:var(--green);animation:pulse 2s infinite}
+  .tracker-circle.active{background:var(--yellow);color:#78350f;border-color:var(--yellow)}
+  .tracker-circle.pending{background:#fff;color:var(--gray200);border-color:var(--gray200)}
+
+  /* ---- ADMIN SIDEBAR ---- */
+  .admin-sidebar{width:260px;min-height:100vh;background:linear-gradient(180deg,var(--green-dark) 0%,#15803d 100%);color:#fff;padding:24px 0;position:fixed;left:0;top:0;z-index:100;overflow-y:auto}
+  .admin-content{margin-left:260px;min-height:100vh;background:#f8fafc;padding:32px}
+  .sidebar-item{display:flex;align-items:center;gap:12px;padding:14px 24px;cursor:pointer;transition:all .2s;font-weight:600;font-size:14px}
+  .sidebar-item:hover,.sidebar-item.active{background:rgba(255,255,255,.15);border-left:4px solid var(--yellow)}
+  .admin-card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+  .stat-card{background:linear-gradient(135deg,var(--green),var(--green-light));color:#fff;border-radius:20px;padding:24px;text-align:center}
+
+  /* ---- SECTION TITLES ---- */
+  .section-title{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-weight:900;color:var(--green-dark);margin-bottom:8px}
+  .section-subtitle{font-size:17px;color:var(--gray600);margin-bottom:40px}
+
+  /* ---- TOAST ---- */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--green);color:#fff;padding:14px 24px;border-radius:14px;font-weight:700;z-index:9999;animation:bounceIn .4s ease both;box-shadow:0 8px 30px rgba(22,163,74,.4)}
+
+  /* ---- RESPONSIVE GRID ---- */
+  .grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  @media(max-width:1024px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}.admin-sidebar{width:220px}.admin-content{margin-left:220px}}
+  @media(max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.admin-sidebar{position:relative;width:100%;min-height:auto}.admin-content{margin-left:0}.hero-section{flex-direction:column;text-align:center}.mobile-hide{display:none}}
+  @media(max-width:480px){.grid-auto{grid-template-columns:repeat(2,1fr);gap:14px}.section-title{font-size:24px}}
+
+  /* ---- MISC ---- */
+  .container{max-width:1280px;margin:0 auto;padding:0 20px}
+  .section{padding:80px 0}
+  .tag-rainbow{background:linear-gradient(90deg,#f87171,#fb923c,#fbbf24,#4ade80,#38bdf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .overlay-card{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 60%);border-radius:20px}
+  .qty-btn{width:34px;height:34px;border-radius:50%;border:2px solid var(--green);background:#fff;color:var(--green);font-size:18px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .qty-btn:hover{background:var(--green);color:#fff;transform:scale(1.15)}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--green-soft),transparent);margin:32px 0}
+  .whatsapp-float{position:fixed;bottom:24px;left:24px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;z-index:999;box-shadow:0 4px 20px rgba(37,211,102,.5);animation:pulse 2s infinite}
+  .label-organic{position:absolute;top:12px;left:12px;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;z-index:2}
+  .rating-star{color:#fbbf24;font-size:14px}
+  .glass-card{background:rgba(255,255,255,.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);border-radius:20px}
+  .nav-link{font-weight:700;font-size:14px;color:var(--gray800);cursor:pointer;transition:color .2s;padding:6px 4px;border-bottom:2px solid transparent}
+  .nav-link:hover,.nav-link.active{color:var(--green);border-bottom-color:var(--green)}
+  input[type=range]{accent-color:var(--green)}
+  .table-row:hover{background:var(--green-soft)}
+
+  /* loading spinner */
+  .spinner{width:48px;height:48px;border:4px solid var(--green-soft);border-top-color:var(--green);border-radius:50%;animation:spin3d .8s linear infinite;margin:60px auto}
+  @keyframes spin3d{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+
+/* ─── DATA ─── */
+const PRODUCTS=[
+  {id:1,name:"Alphonso Mango",price:180,unit:"kg",cat:"Fruits",emoji:"🥭",color:"#fbbf24",img:"https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=400&q=80",desc:"Premium Ratnagiri Alphonso mangoes – sweet, creamy, and farm-fresh. Harvested at peak ripeness.",farm:"Green Valley Farm, Ratnagiri",weight:"1 kg / 2 kg / 5 kg",organic:true,rating:4.8,reviews:124,stock:85},
+  {id:2,name:"Sapota (Chikoo)",price:60,unit:"kg",cat:"Fruits",emoji:"🟫",color:"#a16207",img:"https://images.unsplash.com/photo-1511282250-3f0ee1a1a9ce?w=400&q=80",desc:"Fresh sapota with natural sweetness. Rich in iron and calcium. Directly from farm trees.",farm:"Sunrise Orchards, Tamil Nadu",weight:"500g / 1 kg",organic:true,rating:4.6,reviews:88,stock:120},
+  {id:3,name:"Fresh Lemon",price:40,unit:"kg",cat:"Fruits",emoji:"🍋",color:"#fde047",img:"https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400&q=80",desc:"Juicy, tangy lemons perfect for juice, cooking, and health drinks. Vitamin C powerhouse.",farm:"Citrus Valley, Erode",weight:"250g / 500g / 1 kg",organic:true,rating:4.7,reviews:200,stock:300},
+  {id:4,name:"Tender Coconut",price:35,unit:"piece",cat:"Coconut",emoji:"🥥",color:"#a3e635",img:"https://images.unsplash.com/photo-1536591375667-e5b682a64610?w=400&q=80",desc:"Fresh tender coconut water – nature's energy drink. Harvested fresh from coastal farms.",farm:"Coastal Groves, Coimbatore",weight:"Per piece",organic:true,rating:4.9,reviews:310,stock:200},
+  {id:5,name:"Seasonal Fruit Basket",price:350,unit:"basket",cat:"Fruits",emoji:"🍇",color:"#a855f7",img:"https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&q=80",desc:"A curated basket of seasonal fruits: guava, papaya, banana, and more. Fresh mix every day.",farm:"Multiple Local Farms",weight:"2 kg basket",organic:false,rating:4.5,reviews:67,stock:30},
+  {id:6,name:"Brinjal (Eggplant)",price:30,unit:"kg",cat:"Vegetables",emoji:"🍆",color:"#7c3aed",img:"https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=400&q=80",desc:"Fresh purple brinjal, harvested daily from organic farms. Great for sambar and curries.",farm:"Organic Village Farms",weight:"500g / 1 kg",organic:true,rating:4.4,reviews:55,stock:150},
+  {id:7,name:"Organic Tomato",price:25,unit:"kg",cat:"Vegetables",emoji:"🍅",color:"#ef4444",img:"https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=400&q=80",desc:"Vine-ripened, juicy red tomatoes. No pesticides, naturally grown in open fields.",farm:"Red Earth Farm, Ooty",weight:"500g / 1 kg / 5 kg",organic:true,rating:4.7,reviews:190,stock:400},
+  {id:8,name:"Green Chilli",price:20,unit:"250g",cat:"Vegetables",emoji:"🌶️",color:"#16a34a",img:"https://images.unsplash.com/photo-1601593346740-925612772716?w=400&q=80",desc:"Crispy, spicy green chillis for authentic South Indian flavor in every dish.",farm:"Spice Hill Farms",weight:"100g / 250g",organic:false,rating:4.3,reviews:44,stock:500},
+  {id:9,name:"Organic Spinach Seeds",price:55,unit:"pack",cat:"Seeds",emoji:"🌱",color:"#4ade80",img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",desc:"High-germination spinach seeds. Perfect for home garden or large farm planting.",farm:"Seed Bank, Coimbatore",weight:"50g / 100g pack",organic:true,rating:4.6,reviews:78,stock:200},
+  {id:10,name:"Tomato Seeds (Hybrid)",price:75,unit:"pack",cat:"Seeds",emoji:"🌿",color:"#f87171",img:"https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=400&q=80",desc:"Premium hybrid tomato seeds with 95% germination rate. High yield, disease resistant.",farm:"AgriSeed Labs",weight:"10g pack",organic:false,rating:4.8,reviews:93,stock:150},
+  {id:11,name:"Coconut Oil (Cold Press)",price:280,unit:"litre",cat:"Coconut",emoji:"🫙",color:"#fde68a",img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80",desc:"Pure cold-pressed virgin coconut oil. Rich aroma, no additives. Traditional wood press method.",farm:"Lakshmi Oil Mill, Palakkad",weight:"200ml / 500ml / 1L",organic:true,rating:4.9,reviews:250,stock:60},
+  {id:12,name:"Guava",price:50,unit:"kg",cat:"Fruits",emoji:"🍐",color:"#86efac",img:"https://images.unsplash.com/photo-1536623975707-c4b3b2af565d?w=400&q=80",desc:"Sweet, crunchy guavas loaded with Vitamin C. Fresh picked from farm orchards.",farm:"Valley Orchards, Salem",weight:"500g / 1 kg",organic:true,rating:4.5,reviews:112,stock:180},
+];
+const CATEGORIES=["All","Fruits","Vegetables","Coconut","Seeds"];
+const CAT_COLORS={"Fruits":"#fbbf24","Vegetables":"#4ade80","Coconut":"#a3e635","Seeds":"#86efac","All":"#22c55e"};
+const REVIEWS=[
+  {name:"Priya Rajan",rating:5,text:"Absolutely fresh mangoes! Got them delivered next day. The quality is exceptional – better than any supermarket.",avatar:"P",color:"#fb923c"},
+  {name:"Karthik S",rating:5,text:"Ordered coconut oil and lemon – both were farm fresh. The packaging was great and delivery was super fast!",avatar:"K",color:"#a855f7"},
+  {name:"Meenakshi D",rating:4,text:"Great organic vegetables. The tomatoes and brinjals tasted just like homegrown. Will order again every week!",avatar:"M",color:"#38bdf8"},
+  {name:"Ramesh K",rating:5,text:"Best tender coconuts I've had. Sweet water and fresh cream. Excellent service from Jeya Lakshmi Fresh Mart!",avatar:"R",color:"#4ade80"},
+];
+const ORDER_STATUSES=["Order Placed","Packed","Out for Delivery","Delivered"];
+
+/* ─── CONTEXT / STATE ─── */
+function App(){
+  const [page,setPage]=useState("home");
+  const [cart,setCart]=useState([]);
+  const [selectedProduct,setSelectedProduct]=useState(null);
+  const [toast,setToast]=useState(null);
+  const [adminLogged,setAdminLogged]=useState(false);
+  const [adminPage,setAdminPage]=useState("dashboard");
+  const [orders,setOrders]=useState([
+    {id:"JL001",customer:"Priya Rajan",items:["Alphonso Mango x2","Coconut Oil x1"],total:640,status:2,date:"12 Mar 2026"},
+    {id:"JL002",customer:"Karthik S",items:["Fresh Lemon x1","Tender Coconut x3"],total:145,status:3,date:"13 Mar 2026"},
+    {id:"JL003",customer:"Meenakshi D",items:["Organic Tomato x2","Spinach Seeds x1"],total:105,status:0,date:"15 Mar 2026"},
+  ]);
+  const [filterCat,setFilterCat]=useState("All");
+  const [myOrder,setMyOrder]=useState(null);
+  const [products,setProducts]=useState(PRODUCTS);
+
+  const showToast=(msg)=>{setToast(msg);setTimeout(()=>setToast(null),3000)};
+  const addToCart=(prod,qty=1)=>{
+    setCart(prev=>{
+      const ex=prev.find(i=>i.id===prod.id);
+      if(ex)return prev.map(i=>i.id===prod.id?{...i,qty:i.qty+qty}:i);
+      return[...prev,{...prod,qty}];
+    });
+    showToast(`✅ ${prod.name} added to cart!`);
+  };
+  const removeFromCart=(id)=>setCart(p=>p.filter(i=>i.id!==id));
+  const updateQty=(id,delta)=>setCart(p=>p.map(i=>i.id===id?{...i,qty:Math.max(1,i.qty+delta)}:i));
+  const cartTotal=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const cartCount=cart.reduce((s,i)=>s+i.qty,0);
+
+  const nav=(p)=>{setPage(p);window.scrollTo({top:0,behavior:"smooth"})};
+
+  return(
+    <div>
+      {page!=="admin" && (
+        <Navbar nav={nav} page={page} cartCount={cartCount} />
+      )}
+      {page==="home" && <HomePage nav={nav} products={products} addToCart={addToCart} setSelectedProduct={setSelectedProduct} />}
+      {page==="products" && <ProductsPage nav={nav} products={products} addToCart={addToCart} setSelectedProduct={setSelectedProduct} filterCat={filterCat} setFilterCat={setFilterCat} />}
+      {page==="detail" && selectedProduct && <ProductDetailPage product={selectedProduct} addToCart={addToCart} nav={nav} />}
+      {page==="cart" && <CartPage cart={cart} removeFromCart={removeFromCart} updateQty={updateQty} cartTotal={cartTotal} nav={nav} />}
+      {page==="checkout" && <CheckoutPage cart={cart} cartTotal={cartTotal} nav={nav} setMyOrder={setMyOrder} setCart={setCart} showToast={showToast} orders={orders} setOrders={setOrders} />}
+      {page==="tracking" && <TrackingPage myOrder={myOrder} nav={nav} />}
+      {page==="about" && <AboutPage nav={nav} />}
+      {page==="contact" && <ContactPage nav={nav} showToast={showToast} />}
+      {page==="admin" && <AdminPortal adminLogged={adminLogged} setAdminLogged={setAdminLogged} adminPage={adminPage} setAdminPage={setAdminPage} products={products} setProducts={setProducts} orders={orders} setOrders={setOrders} nav={nav} showToast={showToast} />}
+      {page!=="admin" && <Footer nav={nav} />}
+      {page!=="admin" && <WhatsAppFloat />}
+      {toast && <div className="toast">🛒 {toast}</div>}
+    </div>
+  );
+}
+
+/* ─── NAVBAR ─── */
+function Navbar({nav,page,cartCount}){
+  const [menuOpen,setMenuOpen]=useState(false);
+  const links=[["home","🏠 Home"],["products","🛍 Shop"],["about","🌾 About"],["contact","📞 Contact"]];
+  return(
+    <nav className="navbar">
+      <div className="container" style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 20px"}}>
+        <div className="nav-logo" onClick={()=>nav("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:8}}>
+          <span style={{fontSize:28}}>🌿</span>
+          <div><div>Jeya Lakshmi</div><div style={{fontSize:13,color:"var(--green)",fontFamily:"Nunito",fontWeight:700}}>Fresh Mart</div></div>
+        </div>
+        <div className="mobile-hide" style={{display:"flex",gap:24,alignItems:"center"}}>
+          {links.map(([p,l])=>(
+            <span key={p} className={`nav-link ${page===p?"active":""}`} onClick={()=>nav(p)}>{l}</span>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:12,alignItems:"center"}}>
+          <button className="btn-primary" style={{padding:"9px 18px",fontSize:13}} onClick={()=>nav("cart")}>
+            🛒 Cart {cartCount>0&&<span style={{background:"#ef4444",color:"#fff",borderRadius:"50%",width:20,height:20,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:900}}>{cartCount}</span>}
+          </button>
+          <button className="btn-secondary" style={{padding:"9px 18px",fontSize:13}} onClick={()=>nav("admin")}>⚙️ Admin</button>
+          <button className="mobile-show" style={{background:"none",border:"none",fontSize:24,cursor:"pointer",display:"none"}} onClick={()=>setMenuOpen(!menuOpen)}>☰</button>
+        </div>
+      </div>
+      {menuOpen&&(
+        <div style={{background:"#fff",padding:"16px 24px",borderTop:"1px solid #eee"}}>
+          {links.map(([p,l])=>(
+            <div key={p} style={{padding:"10px 0",fontWeight:700,cursor:"pointer",color:page===p?"var(--green)":"var(--gray800)"}} onClick={()=>{nav(p);setMenuOpen(false)}}>{l}</div>
+          ))}
+        </div>
+      )}
+    </nav>
+  );
+}
+
+/* ─── HOME PAGE ─── */
+function HomePage({nav,products,addToCart,setSelectedProduct}){
+  const featured=products.slice(0,4);
+  const [active,setActive]=useState(0);
+  useEffect(()=>{const t=setInterval(()=>setActive(a=>(a+1)%REVIEWS.length),4000);return()=>clearInterval(t)},[]);
+
+  return(
+    <div>
+      {/* HERO */}
+      <section className="hero-section hero-bg" style={{minHeight:"100vh",paddingTop:80}}>
+        <div className="container" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:60,alignItems:"center",padding:"60px 20px"}}>
+          <div className="fade-in-left">
+            <div className="badge badge-green" style={{marginBottom:16,fontSize:13}}>🌿 100% Farm Fresh • No Middlemen</div>
+            <h1 className="hero-title">Fresh Farm Products<br/><span>Delivered to Your</span><br/>Doorstep 🚚</h1>
+            <p style={{fontSize:17,color:"var(--gray600)",margin:"24px 0",lineHeight:1.8}}>
+              Direct from our farms in Tamil Nadu. Hand-picked, naturally grown, packed with love. 
+              Experience the true taste of fresh harvest every single day.
+            </p>
+            <div style={{display:"flex",gap:14,flexWrap:"wrap",marginTop:28}}>
+              <button className="btn-primary pulse-btn" style={{fontSize:16,padding:"14px 32px"}} onClick={()=>nav("products")}>🛍 Shop Now</button>
+              <button className="btn-secondary" style={{fontSize:16}} onClick={()=>nav("products")}>🥭 Order Fresh Fruits</button>
+            </div>
+            <div style={{display:"flex",gap:32,marginTop:40}}>
+              {[["🌾","500+ Farms"],["🚚","Same Day"],["🌿","100% Organic"],["⭐","4.8 Rating"]].map(([e,l])=>(
+                <div key={l} style={{textAlign:"center"}} className="fade-in-up">
+                  <div style={{fontSize:24}}>{e}</div>
+                  <div style={{fontSize:12,fontWeight:700,color:"var(--green-dark)"}}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="fade-in-right" style={{position:"relative",display:"flex",justifyContent:"center",alignItems:"center"}}>
+            <div style={{width:420,height:420,borderRadius:"50%",background:"radial-gradient(circle,rgba(34,197,94,.15) 0%,rgba(251,191,36,.1) 100%)",position:"absolute"}}/>
+            <div className="float" style={{position:"relative",zIndex:2}}>
+              <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=500&q=80" alt="Fresh Fruits" style={{width:360,height:360,borderRadius:"50%",objectFit:"cover",boxShadow:"0 20px 60px rgba(22,163,74,.3)",border:"6px solid #fff"}} />
+            </div>
+            {[["🥭","top:-10px","right:-10px"],["🍋","bottom:10px","left:-10px"],["🥥","top:50%","left:-40px"],["🌿","bottom:20px","right:-20px"]].map(([e,t,l],i)=>(
+              <div key={i} className="float glass-card" style={{position:"absolute",[t.split(":")[0]]:t.split(":")[1],[l.split(":")[0]]:l.split(":")[1],width:56,height:56,display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,animationDelay:`${i*.5}s`,boxShadow:"0 4px 20px rgba(0,0,0,.1)"}}>
+                {e}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CATEGORIES */}
+      <section className="section" style={{background:"#f0fdf4"}}>
+        <div className="container">
+          <div style={{textAlign:"center"}}>
+            <h2 className="section-title">Shop by Category</h2>
+            <p className="section-subtitle">Find exactly what you need from our fresh farm collections</p>
+          </div>
+          <div className="grid-4">
+            {[
+              {cat:"Fruits",emoji:"🍎",color:"#fef9c3",border:"#fbbf24",img:"https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=300&q=80"},
+              {cat:"Vegetables",emoji:"🥦",color:"#dcfce7",border:"#4ade80",img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=80"},
+              {cat:"Coconut",emoji:"🥥",color:"#f0fdf4",border:"#86efac",img:"https://images.unsplash.com/photo-1536591375667-e5b682a64610?w=300&q=80"},
+              {cat:"Seeds",emoji:"🌱",color:"#f7fee7",border:"#a3e635",img:"https://im"},
+            ].map(c=>(
+              <div key={c.cat} className="card-3d" onClick={()=>nav("products")} style={{cursor:"pointer"}}>
+                <div className="card-3d-inner" style={{background:c.color,borderRadius:20,border:`2px solid ${c.border}`,overflow:"hidden",padding:"0 0 16px"}}>
+                  <img src={c.img} alt={c.cat} style={{width:"100%",height:160,objectFit:"cover"}} />
+                  <div style={{padding:"12px 16px 0",textAlign:"center"}}>
+                    <div style={{fontSize:32,marginBottom:4}}>{c.emoji}</div>
+                    <div style={{fontFamily:"Playfair Display,serif",fontWeight:700,fontSize:20,color:"var(--green-dark)"}}>{c.cat}</div>
+                    <div style={{fontSize:12,color:"var(--gray600)",marginTop:4}}>{products.filter(p=>p.cat===c.cat).length} products</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FEATURED PRODUCTS */}
+      <section className="section">
+        <div className="container">
+          <div style={{textAlign:"center"}}>
+            <h2 className="section-title">Featured Products</h2>
+            <p className="section-subtitle">Hand-picked freshness, delivered straight from our farms</p>
+          </div>
+          <div className="grid-4">
+            {featured.map((p,i)=>(
+              <ProductCard key={p.id} product={p} addToCart={addToCart} nav={()=>{}} setSelectedProduct={setSelectedProduct} delay={i*.1} />
+            ))}
+          </div>
+          <div style={{textAlign:"center",marginTop:40}}>
+            <button className="btn-primary" style={{fontSize:16,padding:"14px 40px"}} onClick={()=>nav("products")}>View All Products →</button>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY US */}
+      <section className="section" style={{background:"linear-gradient(135deg,#f0fdf4,#fef9c3)"}}>
+        <div className="container">
+          <div style={{textAlign:"center"}}>
+            <h2 className="section-title">Why Jeya Lakshmi?</h2>
+            <p className="section-subtitle">We deliver more than just products – we deliver trust</p>
+          </div>
+          <div className="grid-4">
+            {[
+              {icon:"🌾",title:"Farm Direct",desc:"No middlemen. Products travel directly from our farms to your home.",color:"#dcfce7"},
+              {icon:"🌿",title:"100% Organic",desc:"Grown without harmful chemicals. Safe for your family.",color:"#fef9c3"},
+              {icon:"🚚",title:"Same Day Delivery",desc:"Order before 10 AM and get it delivered the same day.",color:"#ffedd5"},
+              {icon:"💚",title:"Quality Guaranteed",desc:"Not satisfied? We replace or refund – no questions asked.",color:"#f0f9ff"},
+            ].map(w=>(
+              <div key={w.title} className="tilt" style={{background:w.color,padding:28,borderRadius:20,textAlign:"center"}}>
+                <div style={{fontSize:48,marginBottom:12}}>{w.icon}</div>
+                <h3 style={{fontFamily:"Playfair Display,serif",fontSize:20,color:"var(--green-dark)",marginBottom:8}}>{w.title}</h3>
+                <p style={{fontSize:14,color:"var(--gray600)",lineHeight:1.7}}>{w.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* REVIEWS */}
+      <section className="section">
+        <div className="container">
+          <div style={{textAlign:"center"}}>
+            <h2 className="section-title">What Our Customers Say</h2>
+            <p className="section-subtitle">Real reviews from happy farm-fresh shoppers</p>
+          </div>
+          <div className="grid-4">
+            {REVIEWS.map((r,i)=>(
+              <div key={i} className={`tilt fade-in-up`} style={{background:"#fff",border:"2px solid #f0fdf4",borderRadius:20,padding:24,animationDelay:`${i*.1}s`,boxShadow:"0 4px 20px rgba(0,0,0,.06)"}}>
+                <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:14}}>
+                  <div style={{width:44,height:44,borderRadius:"50%",background:r.color,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900,fontSize:18}}>{r.avatar}</div>
+                  <div><div style={{fontWeight:800,fontSize:15}}>{r.name}</div><div className="stars">{"★".repeat(r.rating)}</div></div>
+                </div>
+                <p style={{fontSize:14,color:"var(--gray600)",lineHeight:1.8,fontStyle:"italic"}}>"{r.text}"</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA BANNER */}
+      <section style={{background:"linear-gradient(135deg,#14532d,#16a34a,#22c55e)",padding:"60px 20px",textAlign:"center"}}>
+        <div className="float" style={{fontSize:56,marginBottom:16}}>🌾</div>
+        <h2 style={{fontFamily:"Playfair Display,serif",fontSize:"clamp(28px,4vw,48px)",color:"#fff",marginBottom:12}}>Ready for Farm-Fresh Goodness?</h2>
+        <p style={{color:"rgba(255,255,255,.85)",fontSize:17,marginBottom:28}}>Join 2,000+ happy families ordering fresh produce every week</p>
+        <div style={{display:"flex",gap:16,justifyContent:"center",flexWrap:"wrap"}}>
+          <button style={{background:"#fff",color:"var(--green-dark)",border:"none",padding:"14px 36px",borderRadius:50,fontFamily:"Nunito",fontWeight:800,fontSize:16,cursor:"pointer",transition:"all .3s"}} onClick={()=>nav("products")}>🛍 Order Now</button>
+          <button style={{background:"transparent",color:"#fff",border:"2px solid rgba(255,255,255,.7)",padding:"14px 36px",borderRadius:50,fontFamily:"Nunito",fontWeight:800,fontSize:16,cursor:"pointer",transition:"all .3s"}} onClick={()=>nav("contact")}>📞 Contact Us</button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* ─── PRODUCT CARD ─── */
+function ProductCard({product:p,addToCart,setSelectedProduct,nav,delay=0}){
+  return(
+    <div className="product-card fade-in-up" style={{animationDelay:`${delay}s`}} onClick={()=>setSelectedProduct(p)}>
+      {p.organic && <div className="label-organic">🌿 Organic</div>}
+      <div style={{overflow:"hidden",height:200,position:"relative"}}>
+        <img className="product-card-img" src={p.img} alt={p.name} />
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,.3),transparent)"}} />
+        <div style={{position:"absolute",bottom:10,right:10,background:"rgba(255,255,255,.9)",borderRadius:8,padding:"4px 10px",fontWeight:800,color:"var(--green-dark)",fontSize:13}}>₹{p.price}/{p.unit}</div>
+      </div>
+      <div style={{padding:16}}>
+        <div style={{fontWeight:800,fontSize:16,marginBottom:4,color:"var(--gray800)"}}>{p.emoji} {p.name}</div>
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
+          <span className="rating-star">{"★".repeat(Math.floor(p.rating))}</span>
+          <span style={{fontSize:12,color:"var(--gray600)"}}>{p.rating} ({p.reviews})</span>
+        </div>
+        <div style={{display:"flex",gap:8,marginBottom:12}}>
+          <span className="badge badge-green">{p.cat}</span>
+          {p.stock<50&&<span className="badge badge-red">Low Stock</span>}
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <button className="btn-primary" style={{flex:1,padding:"9px 12px",fontSize:13}} onClick={e=>{e.stopPropagation();addToCart(p)}}>🛒 Add to Cart</button>
+          <button className="btn-secondary" style={{padding:"9px 14px",fontSize:13}} onClick={e=>{e.stopPropagation();setSelectedProduct(p)}}>👁</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── PRODUCTS PAGE ─── */
+function ProductsPage({nav,products,addToCart,setSelectedProduct,filterCat,setFilterCat}){
+  const [search,setSearch]=useState("");
+  const [sort,setSort]=useState("default");
+  const filtered=products
+    .filter(p=>filterCat==="All"||p.cat===filterCat)
+    .filter(p=>p.name.toLowerCase().includes(search.toLowerCase()))
+    .sort((a,b)=>sort==="price-asc"?a.price-b.price:sort==="price-desc"?b.price-a.price:sort==="rating"?b.rating-a.rating:0);
+
+  return(
+    <div style={{paddingTop:80}}>
+      <div style={{background:"linear-gradient(135deg,#f0fdf4,#dcfce7)",padding:"50px 20px",textAlign:"center"}}>
+        <h1 className="section-title fade-in-up">🛍 Our Fresh Products</h1>
+        <p className="section-subtitle fade-in-up">Explore {products.length}+ farm-fresh products</p>
+        <div style={{maxWidth:480,margin:"0 auto",position:"relative"}}>
+          <input className="form-input" placeholder="🔍 Search products..." value={search} onChange={e=>setSearch(e.target.value)} style={{paddingLeft:20,width:"100%",borderRadius:50,background:"#fff"}} />
+        </div>
+      </div>
+      <div className="container section" style={{paddingTop:40}}>
+        <div style={{display:"flex",gap:12,marginBottom:28,flexWrap:"wrap",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            {CATEGORIES.map(c=>(
+              <button key={c} className={`cat-pill ${filterCat===c?"active":""}`} style={{background:filterCat===c?CAT_COLORS[c]:"#fff",color:filterCat===c?"#fff":"var(--gray800)",borderColor:CAT_COLORS[c]}} onClick={()=>setFilterCat(c)}>
+                {c}
+              </button>
+            ))}
+          </div>
+          <select className="form-input" style={{width:"auto",borderRadius:50,padding:"9px 16px"}} value={sort} onChange={e=>setSort(e.target.value)}>
+            <option value="default">Sort: Default</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+        <p style={{marginBottom:20,color:"var(--gray600)",fontWeight:600}}>{filtered.length} products found</p>
+        <div className="grid-auto">
+          {filtered.map((p,i)=>(
+            <ProductCard key={p.id} product={p} addToCart={addToCart} setSelectedProduct={(prod)=>{setSelectedProduct(prod);nav("detail");}} delay={i*.05} />
+          ))}
+        </div>
+        {filtered.length===0&&(
+          <div style={{textAlign:"center",padding:80,color:"var(--gray600)"}}>
+            <div style={{fontSize:64}}>🔍</div>
+            <p style={{fontSize:18,fontWeight:700,marginTop:12}}>No products found</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── PRODUCT DETAIL ─── */
+function ProductDetailPage({product:p,addToCart,nav}){
+  const [qty,setQty]=useState(1);
+  const [tab,setTab]=useState("desc");
+  return(
+    <div style={{paddingTop:90}}>
+      <div className="container" style={{padding:"40px 20px"}}>
+        <button style={{background:"none",border:"none",color:"var(--green)",fontWeight:700,cursor:"pointer",fontSize:15,marginBottom:20}} onClick={()=>nav("products")}>← Back to Products</button>
+        <div className="grid-2" style={{gap:48,alignItems:"start"}}>
+          {/* Image */}
+          <div className="fade-in-left">
+            <div style={{borderRadius:24,overflow:"hidden",boxShadow:"0 12px 40px rgba(0,0,0,.12)"}}>
+              <img src={p.img} alt={p.name} style={{width:"100%",height:400,objectFit:"cover",transition:"transform .4s"}} className="product-card-img" />
+            </div>
+            <div style={{display:"flex",gap:12,marginTop:16}}>
+              {[p.img,p.img,p.img].map((src,i)=>(
+                <img key={i} src={src} alt="" style={{width:80,height:80,borderRadius:12,objectFit:"cover",border:"2px solid",borderColor:i===0?"var(--green)":"var(--gray200)",cursor:"pointer"}} />
+              ))}
+            </div>
+          </div>
+          {/* Info */}
+          <div className="fade-in-right">
+            {p.organic&&<div className="badge badge-green" style={{marginBottom:12,fontSize:13}}>🌿 Certified Organic</div>}
+            <h1 style={{fontFamily:"Playfair Display,serif",fontSize:"clamp(26px,3vw,40px)",color:"var(--green-dark)",marginBottom:8}}>{p.emoji} {p.name}</h1>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+              <span className="stars">{"★".repeat(Math.floor(p.rating))}</span>
+              <span style={{fontWeight:700}}>{p.rating}</span>
+              <span style={{color:"var(--gray600)"}}>({p.reviews} reviews)</span>
+            </div>
+            <div style={{fontSize:40,fontWeight:900,color:"var(--green)",fontFamily:"Playfair Display,serif",marginBottom:20}}>₹{p.price}<span style={{fontSize:18,color:"var(--gray600)"}}>/{p.unit}</span></div>
+            <div style={{background:"#f0fdf4",borderRadius:16,padding:20,marginBottom:20}}>
+              {[["🏡 Farm","farm"],["⚖️ Weight","weight"],["✅ Organic",p.organic?"Yes, Certified":"No"],["📦 Stock",`${p.stock} units available`]].map(([label,val])=>(
+                <div key={label} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid #dcfce7",fontSize:14}}>
+                  <span style={{fontWeight:700,color:"var(--gray600)"}}>{label}</span>
+                  <span style={{fontWeight:600,color:"var(--green-dark)"}}>{typeof val==="string"&&val!=="farm"&&val!=="weight"?val:p[val]}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:16,marginBottom:24}}>
+              <div style={{display:"flex",alignItems:"center",gap:10,background:"#f0fdf4",borderRadius:50,padding:"6px 6px"}}>
+                <button className="qty-btn" onClick={()=>setQty(q=>Math.max(1,q-1))}>−</button>
+                <span style={{fontWeight:800,fontSize:18,minWidth:30,textAlign:"center"}}>{qty}</span>
+                <button className="qty-btn" onClick={()=>setQty(q=>q+1)}>+</button>
+              </div>
+              <span style={{fontWeight:700,fontSize:16,color:"var(--gray600)"}}>= ₹{p.price*qty}</span>
+            </div>
+            <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+              <button className="btn-primary" style={{flex:1,padding:"14px 20px",fontSize:15}} onClick={()=>addToCart(p,qty)}>🛒 Add {qty} to Cart</button>
+              <button className="btn-secondary" style={{padding:"14px 20px",fontSize:15}} onClick={()=>nav("cart")}>⚡ Buy Now</button>
+            </div>
+          </div>
+        </div>
+        {/* Tabs */}
+        <div style={{marginTop:48}}>
+          <div style={{display:"flex",gap:0,borderBottom:"2px solid #e5e7eb",marginBottom:24}}>
+            {["desc","info","reviews"].map(t=>(
+              <button key={t} onClick={()=>setTab(t)} style={{padding:"12px 24px",background:"none",border:"none",fontFamily:"Nunito",fontWeight:700,fontSize:15,cursor:"pointer",color:tab===t?"var(--green)":"var(--gray600)",borderBottom:tab===t?"3px solid var(--green)":"3px solid transparent",marginBottom:-2,transition:"all .2s"}}>
+                {t==="desc"?"📋 Description":t==="info"?"ℹ️ Product Info":"⭐ Reviews"}
+              </button>
+            ))}
+          </div>
+          {tab==="desc"&&<p style={{lineHeight:1.9,fontSize:16,color:"var(--gray600)"}}>{p.desc}</p>}
+          {tab==="info"&&(
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:16}}>
+              {[["Category",p.cat],["Farm Origin",p.farm],["Weight Options",p.weight],["Organic",p.organic?"Yes":"No"],["Stock",`${p.stock} units`],["Rating",`${p.rating} / 5`]].map(([k,v])=>(
+                <div key={k} style={{background:"#f9fafb",borderRadius:12,padding:16}}>
+                  <div style={{fontWeight:700,color:"var(--gray600)",fontSize:12,textTransform:"uppercase",marginBottom:4}}>{k}</div>
+                  <div style={{fontWeight:800,color:"var(--green-dark)"}}>{v}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          {tab==="reviews"&&(
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(280px,1fr))",gap:16}}>
+              {REVIEWS.slice(0,3).map((r,i)=>(
+                <div key={i} style={{background:"#f9fafb",borderRadius:16,padding:20}}>
+                  <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+                    <div style={{width:40,height:40,borderRadius:"50%",background:r.color,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:900}}>{r.avatar}</div>
+                    <div><div style={{fontWeight:700}}>{r.name}</div><div className="stars" style={{fontSize:13}}>{"★".repeat(r.rating)}</div></div>
+                  </div>
+                  <p style={{fontSize:14,color:"var(--gray600)",lineHeight:1.7}}>"{r.text}"</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── CART ─── */
+function CartPage({cart,removeFromCart,updateQty,cartTotal,nav}){
+  if(cart.length===0)return(
+    <div style={{paddingTop:80,minHeight:"80vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:20}}>
+      <div style={{fontSize:80}}>🛒</div>
+      <h2 style={{fontFamily:"Playfair Display,serif",color:"var(--green-dark)"}}>Your cart is empty</h2>
+      <p style={{color:"var(--gray600)"}}>Add some fresh farm products!</p>
+      <button className="btn-primary" style={{padding:"14px 36px",fontSize:16}} onClick={()=>nav("products")}>🛍 Start Shopping</button>
+    </div>
+  );
+  return(
+    <div style={{paddingTop:90}}>
+      <div className="container" style={{padding:"40px 20px"}}>
+        <h1 className="section-title fade-in-up">🛒 Your Cart</h1>
+        <p style={{color:"var(--gray600)",marginBottom:32}}>{cart.length} item(s) in your cart</p>
+        <div className="grid-2" style={{gap:32,alignItems:"start"}}>
+          <div>
+            {cart.map(item=>(
+              <div key={item.id} className="fade-in-left" style={{display:"flex",gap:16,background:"#fff",borderRadius:20,padding:16,marginBottom:16,boxShadow:"0 4px 16px rgba(0,0,0,.06)",border:"1px solid #f0fdf4",alignItems:"center"}}>
+                <img src={item.img} alt={item.name} style={{width:80,height:80,borderRadius:14,objectFit:"cover",flexShrink:0}} />
+                <div style={{flex:1}}>
+                  <div style={{fontWeight:800,fontSize:16}}>{item.emoji} {item.name}</div>
+                  <div style={{color:"var(--green)",fontWeight:700,fontSize:15}}>₹{item.price}/{item.unit}</div>
+                  <div style={{display:"flex",alignItems:"center",gap:10,marginTop:8}}>
+                    <button className="qty-btn" style={{width:28,height:28,fontSize:16}} onClick={()=>updateQty(item.id,-1)}>−</button>
+                    <span style={{fontWeight:800,minWidth:24,textAlign:"center"}}>{item.qty}</span>
+                    <button className="qty-btn" style={{width:28,height:28,fontSize:16}} onClick={()=>updateQty(item.id,1)}>+</button>
+                  </div>
+                </div>
+                <div style={{textAlign:"right"}}>
+                  <div style={{fontWeight:900,fontSize:18,color:"var(--green-dark)"}}>₹{item.price*item.qty}</div>
+                  <button className="btn-danger" style={{marginTop:8,padding:"5px 12px",fontSize:12}} onClick={()=>removeFromCart(item.id)}>🗑 Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="fade-in-right">
+            <div style={{background:"linear-gradient(135deg,#f0fdf4,#dcfce7)",borderRadius:24,padding:28,position:"sticky",top:90}}>
+              <h3 style={{fontFamily:"Playfair Display,serif",fontSize:22,color:"var(--green-dark)",marginBottom:20}}>Order Summary</h3>
+              {cart.map(item=>(
+                <div key={item.id} style={{display:"flex",justifyContent:"space-between",padding:"8px 0",borderBottom:"1px solid rgba(0,0,0,.06)",fontSize:14}}>
+                  <span style={{fontWeight:600}}>{item.name} × {item.qty}</span>
+                  <span style={{fontWeight:700}}>₹{item.price*item.qty}</span>
+                </div>
+              ))}
+              <div className="divider" />
+              <div style={{display:"flex",justifyContent:"space-between",padding:"4px 0"}}>
+                <span style={{fontWeight:700}}>Subtotal</span><span style={{fontWeight:700}}>₹{cartTotal}</span>
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between",padding:"4px 0",color:"var(--green)"}}>
+                <span style={{fontWeight:700}}>Delivery</span><span style={{fontWeight:700,color:"var(--green)"}}>FREE 🎉</span>
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between",padding:"12px 0",borderTop:"2px solid var(--green-light)",marginTop:8}}>
+                <span style={{fontWeight:900,fontSize:18}}>Total</span><span style={{fontWeight:900,fontSize:20,color:"var(--green)"}}>₹{cartTotal}</span>
+              </div>
+              <button className="btn-primary" style={{width:"100%",padding:"16px",fontSize:16,marginTop:16,justifyContent:"center"}} onClick={()=>nav("checkout")}>
+                Proceed to Checkout →
+              </button>
+              <button className="btn-secondary" style={{width:"100%",padding:"12px",fontSize:14,marginTop:10}} onClick={()=>nav("products")}>
+                ← Continue Shopping
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── CHECKOUT ─── */
+function CheckoutPage({cart,cartTotal,nav,setMyOrder,setCart,showToast,orders,setOrders}){
+  const [form,setForm]=useState({name:"",phone:"",address:"",pincode:"",payment:"cod"});
+  const [locLoading,setLocLoading]=useState(false);
+  const [placed,setPlaced]=useState(false);
+  const [orderId,setOrderId]=useState("");
+  const upd=(k,v)=>setForm(f=>({...f,[k]:v}));
+  const getLocation=()=>{
+    setLocLoading(true);
+    navigator.geolocation?.getCurrentPosition(pos=>{
+      upd("address",`📍 GPS: Lat ${pos.coords.latitude.toFixed(4)}, Lng ${pos.coords.longitude.toFixed(4)}`);
+      setLocLoading(false);
+    },()=>{upd("address","Location access denied");setLocLoading(false)});
+  };
+  const placeOrder=()=>{
+    if(!form.name||!form.phone||!form.address){showToast("❌ Fill all required fields!");return;}
+    const id="JL"+Date.now().toString().slice(-4);
+    setOrderId(id);
+    const newOrder={id,customer:form.name,items:cart.map(i=>`${i.name} x${i.qty}`),total:cartTotal,status:0,date:new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})};
+    setOrders(o=>[newOrder,...o]);
+    setMyOrder(newOrder);
+    setCart([]);
+    setPlaced(true);
+  };
+  if(placed)return(
+    <div style={{paddingTop:80,minHeight:"80vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16,background:"linear-gradient(135deg,#f0fdf4,#dcfce7)"}}>
+      <div className="bounce-in" style={{fontSize:80}}>🎉</div>
+      <h2 style={{fontFamily:"Playfair Display,serif",fontSize:36,color:"var(--green-dark)"}}>Order Placed!</h2>
+      <p style={{color:"var(--gray600)",fontSize:17}}>Order ID: <strong>{orderId}</strong></p>
+      <p style={{color:"var(--gray600)"}}>You'll receive a confirmation shortly via WhatsApp.</p>
+      <div style={{display:"flex",gap:12,flexWrap:"wrap",justifyContent:"center",marginTop:8}}>
+        <button className="btn-primary" style={{padding:"13px 28px"}} onClick={()=>nav("tracking")}>📦 Track Order</button>
+        <button className="btn-secondary" onClick={()=>nav("products")}>🛍 Continue Shopping</button>
+      </div>
+    </div>
+  );
+  return(
+    <div style={{paddingTop:90}}>
+      <div className="container" style={{padding:"40px 20px"}}>
+        <h1 className="section-title fade-in-up">💳 Checkout</h1>
+        <div className="grid-2" style={{gap:32,alignItems:"start"}}>
+          <div>
+            <div style={{background:"#fff",borderRadius:20,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,.07)",marginBottom:20}}>
+              <h3 style={{fontFamily:"Playfair Display,serif",fontSize:20,color:"var(--green-dark)",marginBottom:20}}>📋 Delivery Information</h3>
+              <div className="form-group"><label className="form-label">Full Name *</label><input className="form-input" placeholder="Your Name" value={form.name} onChange={e=>upd("name",e.target.value)} /></div>
+              <div className="form-group"><label className="form-label">Phone Number *</label><input className="form-input" placeholder="+91 XXXXX XXXXX" value={form.phone} onChange={e=>upd("phone",e.target.value)} /></div>
+              <div className="form-group">
+                <label className="form-label">Delivery Address *</label>
+                <textarea className="form-input" rows={3} placeholder="House No, Street, Area..." value={form.address} onChange={e=>upd("address",e.target.value)} style={{resize:"vertical"}} />
+                <button className="btn-secondary" style={{padding:"9px 18px",fontSize:13,marginTop:8}} onClick={getLocation} disabled={locLoading}>
+                  {locLoading?"📡 Fetching...":"📍 Use GPS Location"}
+                </button>
+              </div>
+              <div className="form-group"><label className="form-label">Pincode</label><input className="form-input" placeholder="641001" value={form.pincode} onChange={e=>upd("pincode",e.target.value)} /></div>
+            </div>
+            <div style={{background:"#fff",borderRadius:20,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+              <h3 style={{fontFamily:"Playfair Display,serif",fontSize:20,color:"var(--green-dark)",marginBottom:20}}>💳 Payment Method</h3>
+              {[["cod","💵 Cash on Delivery","Pay when delivered at your doorstep"],["gpay","📱 Google Pay / UPI","Instant payment with any UPI app"]].map(([val,label,desc])=>(
+                <div key={val} onClick={()=>upd("payment",val)} style={{display:"flex",alignItems:"center",gap:14,padding:16,borderRadius:14,border:`2px solid ${form.payment===val?"var(--green)":"var(--gray200)"}`,background:form.payment===val?"#f0fdf4":"#fff",cursor:"pointer",marginBottom:12,transition:"all .2s"}}>
+                  <div style={{width:22,height:22,borderRadius:"50%",border:`3px solid ${form.payment===val?"var(--green)":"var(--gray200)"}`,background:form.payment===val?"var(--green)":"#fff",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    {form.payment===val&&<div style={{width:8,height:8,borderRadius:"50%",background:"#fff"}} />}
+                  </div>
+                  <div><div style={{fontWeight:700}}>{label}</div><div style={{fontSize:12,color:"var(--gray600)"}}>{desc}</div></div>
+                </div>
+              ))}
+              {form.payment==="gpay"&&(
+                <div style={{background:"#f0f9ff",borderRadius:12,padding:16,marginTop:8,textAlign:"center"}}>
+                  <div style={{fontSize:48}}>📲</div>
+                  <div style={{fontWeight:700,marginTop:8}}>UPI ID: jeyalakshmifresh@okaxis</div>
+                  <div style={{fontSize:13,color:"var(--gray600)"}}>Pay ₹{cartTotal} and share screenshot on WhatsApp</div>
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Order summary */}
+          <div className="fade-in-right">
+            <div style={{background:"linear-gradient(135deg,#f0fdf4,#dcfce7)",borderRadius:24,padding:28,position:"sticky",top:90}}>
+              <h3 style={{fontFamily:"Playfair Display,serif",fontSize:20,color:"var(--green-dark)",marginBottom:16}}>🧾 Order Summary</h3>
+              {cart.map(item=>(
+                <div key={item.id} style={{display:"flex",gap:10,padding:"8px 0",borderBottom:"1px solid rgba(0,0,0,.05)"}}>
+                  <img src={item.img} alt={item.name} style={{width:44,height:44,borderRadius:8,objectFit:"cover"}} />
+                  <div style={{flex:1}}>
+                    <div style={{fontWeight:700,fontSize:14}}>{item.name}</div>
+                    <div style={{fontSize:12,color:"var(--gray600)"}}>Qty: {item.qty}</div>
+                  </div>
+                  <div style={{fontWeight:700,color:"var(--green-dark)"}}>₹{item.price*item.qty}</div>
+                </div>
+              ))}
+              <div className="divider" />
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+                <span style={{fontWeight:700}}>Delivery</span>
+                <span style={{color:"var(--green)",fontWeight:700}}>FREE 🎉</span>
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between",borderTop:"2px solid var(--green-light)",paddingTop:12,marginTop:4}}>
+                <span style={{fontWeight:900,fontSize:18}}>Total</span>
+                <span style={{fontWeight:900,fontSize:20,color:"var(--green)"}}>₹{cartTotal}</span>
+              </div>
+              <button className="btn-primary" style={{width:"100%",padding:"16px",fontSize:16,marginTop:20,justifyContent:"center"}} onClick={placeOrder}>
+                🎉 Place Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── ORDER TRACKING ─── */
+function TrackingPage({myOrder,nav}){
+  const [trackId,setTrackId]=useState("");
+  const [found,setFound]=useState(myOrder);
+  const status=found?found.status:0;
+  return(
+    <div style={{paddingTop:90,minHeight:"80vh"}}>
+      <div className="container" style={{padding:"40px 20px",maxWidth:800,margin:"0 auto"}}>
+        <h1 className="section-title fade-in-up" style={{textAlign:"center"}}>📦 Track Your Order</h1>
+        <div style={{background:"#fff",borderRadius:20,padding:24,boxShadow:"0 4px 20px rgba(0,0,0,.08)",marginBottom:28}}>
+          <div style={{display:"flex",gap:12}}>
+            <input className="form-input" style={{flex:1}} placeholder="Enter Order ID (e.g. JL001)" value={trackId} onChange={e=>setTrackId(e.target.value)} />
+            <button className="btn-primary" onClick={()=>setFound(myOrder)}>🔍 Track</button>
+          </div>
+        </div>
+        {found?(
+          <div className="fade-in-up">
+            <div style={{background:"linear-gradient(135deg,#f0fdf4,#dcfce7)",borderRadius:24,padding:28,marginBottom:24}}>
+              <div style={{display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:12,marginBottom:24}}>
+                <div><div style={{fontWeight:800,fontSize:18}}>Order #{found.id}</div><div style={{color:"var(--gray600)",fontSize:14}}>{found.date}</div></div>
+                <div className="badge badge-green" style={{fontSize:13,padding:"8px 16px"}}>{ORDER_STATUSES[found.status]}</div>
+              </div>
+              {/* tracker */}
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"0 10px",position:"relative"}}>
+                {ORDER_STATUSES.map((s,i)=>(
+                  <div key={s} className="tracker-step">
+                    <div className={`tracker-circle ${i<status?"done":i===status?"active":"pending"}`}>
+                      {i<status?"✓":i===0?"📋":i===1?"📦":i===2?"🚚":"🏠"}
+                    </div>
+                    <div style={{fontSize:12,fontWeight:700,textAlign:"center",color:i<=status?"var(--green-dark)":"var(--gray200)",marginTop:6,maxWidth:80}}>{s}</div>
+                    {i<ORDER_STATUSES.length-1&&(
+                      <div style={{position:"absolute",left:"50%",top:20,width:"100%",height:3,background:i<status?"var(--green)":"var(--gray200)",zIndex:0,transition:"background .4s"}} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{background:"#fff",borderRadius:20,padding:24,boxShadow:"0 4px 16px rgba(0,0,0,.06)"}}>
+              <h3 style={{fontWeight:800,marginBottom:12}}>Ordered Items</h3>
+              {found.items.map((item,i)=>(
+                <div key={i} style={{padding:"8px 0",borderBottom:"1px solid #f0fdf4",fontSize:15,color:"var(--gray600)"}}>📦 {item}</div>
+              ))}
+              <div style={{display:"flex",justifyContent:"space-between",marginTop:12,fontWeight:800,fontSize:17}}>
+                <span>Total Paid</span><span style={{color:"var(--green)"}}>₹{found.total}</span>
+              </div>
+            </div>
+          </div>
+        ):(
+          <div style={{textAlign:"center",padding:60}}>
+            <div style={{fontSize:64}}>🔍</div>
+            <p style={{marginTop:12,color:"var(--gray600)",fontSize:16}}>Enter your Order ID to track your delivery</p>
+            {myOrder&&<button className="btn-primary" style={{marginTop:16}} onClick={()=>setFound(myOrder)}>View Latest Order</button>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── ABOUT ─── */
+function AboutPage(){
+  return(
+    <div style={{paddingTop:80}}>
+      <div style={{background:"linear-gradient(135deg,#14532d,#16a34a)",padding:"80px 20px",textAlign:"center",color:"#fff"}}>
+        <h1 className="section-title fade-in-up" style={{color:"#fff",marginBottom:16}}>🌾 Our Story</h1>
+        <p className="fade-in-up" style={{fontSize:18,opacity:.9,maxWidth:600,margin:"0 auto"}}>From humble farm roots to your modern doorstep</p>
+      </div>
+      <div className="container section">
+        <div className="grid-2" style={{gap:48,alignItems:"center",marginBottom:60}}>
+          <div className="fade-in-left">
+            <h2 className="section-title">About Jeya Lakshmi Fresh Mart</h2>
+            <p style={{lineHeight:1.9,color:"var(--gray600)",fontSize:16,marginBottom:16}}>
+              Founded in 2010 by the Jeya Lakshmi family in Coimbatore, Tamil Nadu, we started with a single mango orchard and a dream: to bring the purest farm freshness to every home.
+            </p>
+            <p style={{lineHeight:1.9,color:"var(--gray600)",fontSize:16,marginBottom:16}}>
+              Today, we partner with over 500 farmers across Tamil Nadu, Kerala, and Karnataka to bring you the freshest fruits, vegetables, and farm products – with zero middlemen and maximum nutrition.
+            </p>
+            <p style={{lineHeight:1.9,color:"var(--gray600)",fontSize:16}}>
+              Our promise is simple: if it's not fresh, we won't sell it. Every product is hand-inspected, naturally grown, and delivered with love.
+            </p>
+          </div>
+          <div className="fade-in-right">
+            <img src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=600&q=80" alt="Farm" style={{width:"100%",borderRadius:24,boxShadow:"0 12px 40px rgba(0,0,0,.15)"}} />
+          </div>
+        </div>
+        {/* Stats */}
+        <div className="grid-4" style={{marginBottom:60}}>
+          {[["500+","Partner Farms","#fef9c3"],["50,000+","Happy Customers","#dcfce7"],["2000+","Products Delivered Daily","#ffedd5"],["10+","Years of Freshness","#f0f9ff"]].map(([n,l,c])=>(
+            <div key={l} className="tilt" style={{background:c,borderRadius:20,padding:28,textAlign:"center"}}>
+              <div style={{fontFamily:"Playfair Display,serif",fontSize:44,fontWeight:900,color:"var(--green)"}}>{n}</div>
+              <div style={{fontWeight:700,color:"var(--gray600)",marginTop:4}}>{l}</div>
+            </div>
+          ))}
+        </div>
+        {/* Farming Methods */}
+        <div style={{textAlign:"center",marginBottom:40}}>
+          <h2 className="section-title">Our Farming Philosophy</h2>
+        </div>
+        <div className="grid-3">
+          {[
+            {icon:"🌱",title:"Natural Farming",desc:"We use traditional natural farming methods – no synthetic fertilizers, no harmful pesticides. Just the power of nature."},
+            {icon:"💧",title:"Water Conservation",desc:"Drip irrigation and rainwater harvesting ensure our farms use 60% less water than conventional farming."},
+            {icon:"♻️",title:"Zero Waste",desc:"Unsold produce goes to compost. Packaging is 100% biodegradable. We care for the earth as much as your health."},
+          ].map(m=>(
+            <div key={m.title} className="tilt" style={{background:"#f9fafb",borderRadius:20,padding:28,textAlign:"center"}}>
+              <div style={{fontSize:48,marginBottom:12}}>{m.icon}</div>
+              <h3 style={{fontFamily:"Playfair Display,serif",fontSize:20,color:"var(--green-dark)",marginBottom:10}}>{m.title}</h3>
+              <p style={{color:"var(--gray600)",lineHeight:1.8,fontSize:14}}>{m.desc}</p>
+            </div>
+          ))}
+        </div>
+        {/* Farm gallery */}
+        <div style={{marginTop:60}}>
+          <h2 className="section-title" style={{textAlign:"center",marginBottom:24}}>📸 Farm Gallery</h2>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:16}}>
+            {[
+              "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&q=80",
+              "https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=300&q=80",
+              "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=300&q=80",
+              "https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?w=300&q=80",
+              "https://images.unsplash.com/photo-1543257580-7269da773bf5?w=300&q=80",
+              "https://images.unsplash.com/photo-1471193945509-9ad0617afabf?w=300&q=80",
+            ].map((src,i)=>(
+              <div key={i} className="product-card" style={{height:180}}>
+                <img src={src} alt="Farm" style={{width:"100%",height:"100%",objectFit:"cover"}} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── CONTACT ─── */
+function ContactPage({nav,showToast}){
+  const [form,setForm]=useState({name:"",email:"",message:""});
+  const submit=()=>{showToast("✅ Message sent! We'll reply via WhatsApp");setForm({name:"",email:"",message:""})};
+  return(
+    <div style={{paddingTop:80}}>
+      <div style={{background:"linear-gradient(135deg,#f0fdf4,#dcfce7)",padding:"60px 20px",textAlign:"center"}}>
+        <h1 className="section-title fade-in-up">📞 Contact Us</h1>
+        <p className="fade-in-up" style={{color:"var(--gray600)",fontSize:17}}>We're always here to help. Reach us anytime!</p>
+      </div>
+      <div className="container section">
+        <div className="grid-2" style={{gap:48,alignItems:"start"}}>
+          <div className="fade-in-left">
+            <div style={{background:"#fff",borderRadius:24,padding:32,boxShadow:"0 4px 20px rgba(0,0,0,.07)"}}>
+              <h2 style={{fontFamily:"Playfair Display,serif",fontSize:24,color:"var(--green-dark)",marginBottom:24}}>Send us a Message</h2>
+              <div className="form-group"><label className="form-label">Your Name</label><input className="form-input" placeholder="Your Name" value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} /></div>
+              <div className="form-group"><label className="form-label">Email Address</label><input className="form-input" type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} /></div>
+              <div className="form-group"><label className="form-label">Message</label><textarea className="form-input" rows={5} placeholder="How can we help you?" value={form.message} onChange={e=>setForm(f=>({...f,message:e.target.value}))} style={{resize:"vertical"}} /></div>
+              <button className="btn-primary" style={{width:"100%",padding:"14px",fontSize:16,justifyContent:"center"}} onClick={submit}>📤 Send Message</button>
+            </div>
+          </div>
+          <div className="fade-in-right">
+            <div style={{marginBottom:20}}>
+              {[
+                {icon:"📱",title:"Phone / WhatsApp",val:"+91 80723 77478",color:"#dcfce7"},
+                {icon:"📧",title:"Email",val:"info@jeyalakshmifresh.com",color:"#fef9c3"},
+                {icon:"🏠",title:"Farm Address",val:"123, Farm Road, Coimbatore, Tamil Nadu – 641001",color:"#ffedd5"},
+                {icon:"🕐",title:"Working Hours",val:"Mon–Sat: 6 AM – 8 PM\nSunday: 7 AM – 1 PM",color:"#f0f9ff"},
+              ].map(c=>(
+                <div key={c.title} className="tilt" style={{background:c.color,borderRadius:16,padding:20,marginBottom:14,display:"flex",gap:16,alignItems:"center"}}>
+                  <div style={{fontSize:32,minWidth:40}}>{c.icon}</div>
+                  <div><div style={{fontWeight:800,color:"var(--green-dark)",marginBottom:4}}>{c.title}</div><div style={{color:"var(--gray600)",fontSize:14,whiteSpace:"pre-line"}}>{c.val}</div></div>
+                </div>
+              ))}
+            </div>
+            <a href="https://wa.me/918072377478" target="_blank" rel="noreferrer" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:12,background:"#25D366",color:"#fff",padding:"16px 24px",borderRadius:16,textDecoration:"none",fontWeight:800,fontSize:16,boxShadow:"0 8px 24px rgba(37,211,102,.4)"}}>
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+              </svg>
+              Chat on WhatsApp
+            </a>
+            {/* Map placeholder */}
+            <div style={{marginTop:20,borderRadius:20,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,.1)"}}>
+              <div style={{background:"#e5e7eb",height:220,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:8}}>
+                <div style={{fontSize:48}}>🗺️</div>
+                <div style={{fontWeight:700,color:"var(--gray600)"}}>Coimbatore, Tamil Nadu</div>
+                <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="btn-primary" style={{fontSize:13,padding:"8px 20px"}}>Open in Maps</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── ADMIN PORTAL ─── */
+function AdminPortal({adminLogged,setAdminLogged,adminPage,setAdminPage,products,setProducts,orders,setOrders,nav,showToast}){
+  if(!adminLogged)return <AdminLogin setAdminLogged={setAdminLogged} nav={nav} />;
+  return(
+    <div style={{display:"flex",minHeight:"100vh"}}>
+      <AdminSidebar adminPage={adminPage} setAdminPage={setAdminPage} setAdminLogged={setAdminLogged} nav={nav} />
+      <div className="admin-content">
+        {adminPage==="dashboard"&&<AdminDashboard orders={orders} products={products} />}
+        {adminPage==="products"&&<AdminProducts products={products} setProducts={setProducts} showToast={showToast} />}
+        {adminPage==="orders"&&<AdminOrders orders={orders} setOrders={setOrders} showToast={showToast} />}
+        {adminPage==="add-product"&&<AdminAddProduct setProducts={setProducts} showToast={showToast} setAdminPage={setAdminPage} />}
+        {adminPage==="categories"&&<AdminCategories />}
+        {adminPage==="banner"&&<AdminBanner showToast={showToast} />}
+      </div>
+    </div>
+  );
+}
+
+function AdminLogin({setAdminLogged,nav}){
+  const [user,setUser]=useState("");const [pass,setPass]=useState("");const [err,setErr]=useState("");
+  const login=()=>{if(user==="admin"&&pass==="admin123"){setAdminLogged(true)}else{setErr("Invalid credentials. Try admin/admin123")}};
+  return(
+    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#14532d,#16a34a,#22c55e)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+      <div className="bounce-in" style={{background:"#fff",borderRadius:28,padding:44,width:"100%",maxWidth:400,boxShadow:"0 20px 60px rgba(0,0,0,.2)"}}>
+        <div style={{textAlign:"center",marginBottom:28}}>
+          <div style={{fontSize:56}}>🌿</div>
+          <h2 style={{fontFamily:"Playfair Display,serif",color:"var(--green-dark)",fontSize:26}}>Admin Portal</h2>
+          <p style={{color:"var(--gray600)",fontSize:14}}>Jeya Lakshmi Fresh Mart</p>
+        </div>
+        <div className="form-group"><label className="form-label">Username</label><input className="form-input" placeholder="admin" value={user} onChange={e=>setUser(e.target.value)} /></div>
+        <div className="form-group"><label className="form-label">Password</label><input className="form-input" type="password" placeholder="••••••••" value={pass} onChange={e=>setPass(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()} /></div>
+        {err&&<div style={{background:"#fee2e2",color:"#dc2626",padding:"10px 14px",borderRadius:10,fontSize:13,marginBottom:14}}>{err}</div>}
+        <button className="btn-primary" style={{width:"100%",padding:"14px",fontSize:16,justifyContent:"center"}} onClick={login}>🔐 Login to Admin</button>
+        <button style={{width:"100%",marginTop:10,background:"none",border:"none",color:"var(--green)",fontWeight:700,cursor:"pointer",fontSize:14}} onClick={()=>nav("home")}>← Back to Website</button>
+      </div>
+    </div>
+  );
+}
+
+function AdminSidebar({adminPage,setAdminPage,setAdminLogged,nav}){
+  const items=[
+    ["dashboard","📊 Dashboard"],["products","📦 Products"],["add-product","➕ Add Product"],["orders","🧾 Orders"],["categories","🏷 Categories"],["banner","🖼 Banner"],
+  ];
+  return(
+    <div className="admin-sidebar">
+      <div style={{padding:"0 24px 24px",borderBottom:"1px solid rgba(255,255,255,.15)",marginBottom:8}}>
+        <div style={{fontSize:28,marginBottom:4}}>🌿</div>
+        <div style={{fontFamily:"Playfair Display,serif",fontSize:18,fontWeight:700}}>Fresh Mart</div>
+        <div style={{fontSize:12,opacity:.7}}>Admin Dashboard</div>
+      </div>
+      {items.map(([p,l])=>(
+        <div key={p} className={`sidebar-item ${adminPage===p?"active":""}`} onClick={()=>setAdminPage(p)}>{l}</div>
+      ))}
+      <div style={{position:"absolute",bottom:20,left:0,right:0,padding:"0 24px"}}>
+        <button style={{width:"100%",background:"rgba(255,255,255,.15)",border:"1px solid rgba(255,255,255,.3)",color:"#fff",padding:"10px",borderRadius:10,cursor:"pointer",fontFamily:"Nunito",fontWeight:700}} onClick={()=>{setAdminLogged(false);nav("home")}}>🚪 Logout</button>
+      </div>
+    </div>
+  );
+}
+
+function AdminDashboard({orders,products}){
+  const totalRev=orders.reduce((s,o)=>s+o.total,0);
+  return(
+    <div>
+      <h1 style={{fontFamily:"Playfair Display,serif",fontSize:30,color:"var(--green-dark)",marginBottom:8}}>📊 Dashboard</h1>
+      <p style={{color:"var(--gray600)",marginBottom:28}}>Welcome back! Here's your store overview.</p>
+      <div className="grid-4" style={{marginBottom:28}}>
+        {[["₹"+totalRev,"Total Revenue","💰","#16a34a,#22c55e"],["#"+orders.length,"Total Orders","📦","#fb923c,#fbbf24"],["#"+products.length,"Products","🛍","#a855f7,#c084fc"],["4.8 ⭐","Avg Rating","⭐","#38bdf8,#67e8f9"]].map(([v,l,e,grad])=>(
+          <div key={l} className="bounce-in" style={{background:`linear-gradient(135deg,${grad})`,borderRadius:20,padding:24,color:"#fff",boxShadow:"0 8px 20px rgba(0,0,0,.15)"}}>
+            <div style={{fontSize:32,marginBottom:8}}>{e}</div>
+            <div style={{fontSize:28,fontWeight:900,fontFamily:"Playfair Display,serif"}}>{v}</div>
+            <div style={{opacity:.85,fontSize:14,marginTop:4}}>{l}</div>
+          </div>
+        ))}
+      </div>
+      <div className="grid-2" style={{gap:24}}>
+        <div className="admin-card">
+          <h3 style={{fontWeight:800,marginBottom:16,color:"var(--green-dark)"}}>Recent Orders</h3>
+          <table style={{width:"100%",borderCollapse:"collapse"}}>
+            <thead><tr style={{background:"#f0fdf4"}}>{["ID","Customer","Total","Status"].map(h=><th key={h} style={{padding:"10px 12px",textAlign:"left",fontSize:13,color:"var(--gray600)",fontWeight:700}}>{h}</th>)}</tr></thead>
+            <tbody>
+              {orders.slice(0,5).map(o=>(
+                <tr key={o.id} className="table-row" style={{borderBottom:"1px solid #f0fdf4"}}>
+                  <td style={{padding:"10px 12px",fontWeight:700,fontSize:13}}>#{o.id}</td>
+                  <td style={{padding:"10px 12px",fontSize:13}}>{o.customer}</td>
+                  <td style={{padding:"10px 12px",fontWeight:700,color:"var(--green)",fontSize:13}}>₹{o.total}</td>
+                  <td style={{padding:"10px 12px"}}><span className={`badge ${["badge-yellow","badge-orange","badge-green","badge-green"][Math.min(o.status,3)]}`}>{ORDER_STATUSES[o.status]}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="admin-card">
+          <h3 style={{fontWeight:800,marginBottom:16,color:"var(--green-dark)"}}>Top Products</h3>
+          {products.slice(0,5).map(p=>(
+            <div key={p.id} style={{display:"flex",gap:12,padding:"8px 0",borderBottom:"1px solid #f0fdf4",alignItems:"center"}}>
+              <img src={p.img} alt={p.name} style={{width:44,height:44,borderRadius:8,objectFit:"cover"}} />
+              <div style={{flex:1}}>
+                <div style={{fontWeight:700,fontSize:14}}>{p.name}</div>
+                <div style={{fontSize:12,color:"var(--gray600)"}}>Stock: {p.stock}</div>
+              </div>
+              <div style={{fontWeight:800,color:"var(--green)"}}>₹{p.price}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminProducts({products,setProducts,showToast}){
+  const deleteProduct=(id)=>{setProducts(p=>p.filter(x=>x.id!==id));showToast("🗑 Product deleted")};
+  return(
+    <div>
+      <h1 style={{fontFamily:"Playfair Display,serif",fontSize:28,color:"var(--green-dark)",marginBottom:24}}>📦 Manage Products</h1>
+      <div className="admin-card">
+        <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <thead><tr style={{background:"#f0fdf4"}}>{["Image","Product","Category","Price","Stock","Rating","Actions"].map(h=><th key={h} style={{padding:"12px 14px",textAlign:"left",fontSize:13,color:"var(--gray600)",fontWeight:700}}>{h}</th>)}</tr></thead>
+          <tbody>
+            {products.map(p=>(
+              <tr key={p.id} className="table-row" style={{borderBottom:"1px solid #f0fdf4"}}>
+                <td style={{padding:"10px 14px"}}><img src={p.img} alt={p.name} style={{width:52,height:52,borderRadius:10,objectFit:"cover"}} /></td>
+                <td style={{padding:"10px 14px"}}><div style={{fontWeight:700,fontSize:14}}>{p.emoji} {p.name}</div>{p.organic&&<span className="badge badge-green" style={{fontSize:10}}>Organic</span>}</td>
+                <td style={{padding:"10px 14px",fontSize:13}}>{p.cat}</td>
+                <td style={{padding:"10px 14px",fontWeight:700,color:"var(--green)",fontSize:14}}>₹{p.price}/{p.unit}</td>
+                <td style={{padding:"10px 14px",fontSize:13}}>{p.stock}</td>
+                <td style={{padding:"10px 14px"}}><span className="rating-star" style={{fontSize:13}}>★</span> {p.rating}</td>
+                <td style={{padding:"10px 14px"}}>
+                  <div style={{display:"flex",gap:6}}>
+                    <button style={{background:"#dbeafe",color:"#1d4ed8",border:"none",padding:"6px 12px",borderRadius:8,cursor:"pointer",fontFamily:"Nunito",fontWeight:700,fontSize:12}}>✏️ Edit</button>
+                    <button className="btn-danger" style={{padding:"6px 12px",fontSize:12}} onClick={()=>deleteProduct(p.id)}>🗑</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function AdminAddProduct({setProducts,showToast,setAdminPage}){
+  const [form,setForm]=useState({name:"",price:"",unit:"kg",cat:"Fruits",stock:"",emoji:"🍎",desc:"",organic:false});
+  const upd=(k,v)=>setForm(f=>({...f,[k]:v}));
+  const submit=()=>{
+    if(!form.name||!form.price||!form.stock){showToast("❌ Fill all required fields!");return;}
+    const newProd={id:Date.now(),...form,price:Number(form.price),stock:Number(form.stock),img:"https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&q=80",rating:4.5,reviews:0,farm:"New Farm",weight:form.unit};
+    setProducts(p=>[...p,newProd]);
+    showToast(`✅ ${form.name} added!`);
+    setAdminPage("products");
+  };
+  return(
+    <div>
+      <h1 style={{fontFamily:"Playfair Display,serif",fontSize:28,color:"var(--green-dark)",marginBottom:24}}>➕ Add New Product</h1>
+      <div className="admin-card" style={{maxWidth:600}}>
+        <div className="form-group"><label className="form-label">Product Name *</label><input className="form-input" placeholder="e.g. Alphonso Mango" value={form.name} onChange={e=>upd("name",e.target.value)} /></div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+          <div className="form-group"><label className="form-label">Price *</label><input className="form-input" type="number" placeholder="180" value={form.price} onChange={e=>upd("price",e.target.value)} /></div>
+          <div className="form-group"><label className="form-label">Unit</label>
+            <select className="form-input" value={form.unit} onChange={e=>upd("unit",e.target.value)}>
+              {["kg","g","litre","piece","basket","pack"].map(u=><option key={u}>{u}</option>)}
+            </select>
+          </div>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+          <div className="form-group"><label className="form-label">Category</label>
+            <select className="form-input" value={form.cat} onChange={e=>upd("cat",e.target.value)}>
+              {["Fruits","Vegetables","Coconut","Seeds"].map(c=><option key={c}>{c}</option>)}
+            </select>
+          </div>
+          <div className="form-group"><label className="form-label">Stock *</label><input className="form-input" type="number" placeholder="100" value={form.stock} onChange={e=>upd("stock",e.target.value)} /></div>
+        </div>
+        <div className="form-group"><label className="form-label">Emoji</label><input className="form-input" placeholder="🍎" value={form.emoji} onChange={e=>upd("emoji",e.target.value)} /></div>
+        <div className="form-group"><label className="form-label">Description</label><textarea className="form-input" rows={3} placeholder="Product description..." value={form.desc} onChange={e=>upd("desc",e.target.value)} style={{resize:"vertical"}} /></div>
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
+          <input type="checkbox" id="org" checked={form.organic} onChange={e=>upd("organic",e.target.checked)} style={{width:18,height:18,accentColor:"var(--green)"}} />
+          <label htmlFor="org" style={{fontWeight:700,fontSize:14,color:"var(--green-dark)",cursor:"pointer"}}>🌿 Organic Certified</label>
+        </div>
+        <div style={{display:"flex",gap:12}}>
+          <button className="btn-primary" style={{flex:1,padding:"13px",fontSize:15,justifyContent:"center"}} onClick={submit}>✅ Add Product</button>
+          <button className="btn-secondary" style={{padding:"13px 20px"}} onClick={()=>setAdminPage("products")}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminOrders({orders,setOrders,showToast}){
+  const updateStatus=(id,delta)=>{
+    setOrders(o=>o.map(x=>x.id===id?{...x,status:Math.min(3,Math.max(0,x.status+delta))}:x));
+    showToast("✅ Order status updated");
+  };
+  return(
+    <div>
+      <h1 style={{fontFamily:"Playfair Display,serif",fontSize:28,color:"var(--green-dark)",marginBottom:24}}>🧾 Manage Orders</h1>
+      <div className="admin-card">
+        <table style={{width:"100%",borderCollapse:"collapse"}}>
+          <thead><tr style={{background:"#f0fdf4"}}>{["Order ID","Customer","Items","Date","Total","Status","Actions"].map(h=><th key={h} style={{padding:"12px 14px",textAlign:"left",fontSize:13,color:"var(--gray600)",fontWeight:700}}>{h}</th>)}</tr></thead>
+          <tbody>
+            {orders.map(o=>(
+              <tr key={o.id} className="table-row" style={{borderBottom:"1px solid #f0fdf4"}}>
+                <td style={{padding:"10px 14px",fontWeight:800,fontSize:14,color:"var(--green)"}}>{o.id}</td>
+                <td style={{padding:"10px 14px",fontWeight:600,fontSize:14}}>{o.customer}</td>
+                <td style={{padding:"10px 14px",fontSize:12,color:"var(--gray600)",maxWidth:180}}>{o.items.join(", ")}</td>
+                <td style={{padding:"10px 14px",fontSize:13}}>{o.date}</td>
+                <td style={{padding:"10px 14px",fontWeight:800,color:"var(--green)"}}>₹{o.total}</td>
+                <td style={{padding:"10px 14px"}}><span className="badge badge-green" style={{fontSize:11}}>{ORDER_STATUSES[o.status]}</span></td>
+                <td style={{padding:"10px 14px"}}>
+                  <div style={{display:"flex",gap:4}}>
+                    <button onClick={()=>updateStatus(o.id,-1)} style={{background:"#fee2e2",color:"#dc2626",border:"none",padding:"6px 8px",borderRadius:6,cursor:"pointer",fontWeight:700,fontSize:12}} disabled={o.status===0}>◀</button>
+                    <button onClick={()=>updateStatus(o.id,1)} style={{background:"#dcfce7",color:"#16a34a",border:"none",padding:"6px 8px",borderRadius:6,cursor:"pointer",fontWeight:700,fontSize:12}} disabled={o.status===3}>▶</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function AdminCategories(){
+  const cats=[{name:"Fruits",count:PRODUCTS.filter(p=>p.cat==="Fruits").length,color:"#fef9c3",emoji:"🍎"},
+    {name:"Vegetables",count:PRODUCTS.filter(p=>p.cat==="Vegetables").length,color:"#dcfce7",emoji:"🥦"},
+    {name:"Coconut",count:PRODUCTS.filter(p=>p.cat==="Coconut").length,color:"#f0f9ff",emoji:"🥥"},
+    {name:"Seeds",count:PRODUCTS.filter(p=>p.cat==="Seeds").length,color:"#f7fee7",emoji:"🌱"},
+  ];
+  return(
+    <div>
+      <h1 style={{fontFamily:"Playfair Display,serif",fontSize:28,color:"var(--green-dark)",marginBottom:24}}>🏷 Category Management</h1>
+      <div className="grid-2">
+        {cats.map(c=>(
+          <div key={c.name} className="admin-card tilt" style={{background:c.color,display:"flex",alignItems:"center",gap:20}}>
+            <div style={{fontSize:48}}>{c.emoji}</div>
+            <div>
+              <div style={{fontFamily:"Playfair Display,serif",fontSize:22,fontWeight:900,color:"var(--green-dark)"}}>{c.name}</div>
+              <div style={{color:"var(--gray600)",fontWeight:600}}>{c.count} products</div>
+              <button style={{marginTop:8,background:"var(--green)",color:"#fff",border:"none",padding:"6px 14px",borderRadius:20,fontFamily:"Nunito",fontWeight:700,cursor:"pointer",fontSize:12}}>Manage</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AdminBanner({showToast}){
+  const [url,setUrl]=useState("https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800&q=80");
+  return(
+    <div>
+      <h1 style={{fontFamily:"Playfair Display,serif",fontSize:28,color:"var(--green-dark)",marginBottom:24}}>🖼 Banner Management</h1>
+      <div className="admin-card">
+        <img src={url} alt="Banner" style={{width:"100%",height:280,objectFit:"cover",borderRadius:16,marginBottom:20}} />
+        <div className="form-group"><label className="form-label">Banner Image URL</label><input className="form-input" value={url} onChange={e=>setUrl(e.target.value)} /></div>
+        <button className="btn-primary" style={{padding:"12px 24px",fontSize:14}} onClick={()=>showToast("✅ Banner updated!")}>💾 Save Banner</button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── FOOTER ─── */
+function Footer({nav}){
+  return(
+    <footer style={{background:"linear-gradient(135deg,#14532d,#166534)",color:"#fff",padding:"60px 20px 24px"}}>
+      <div className="container">
+        <div className="grid-4" style={{marginBottom:40}}>
+          <div>
+            <div style={{fontFamily:"Playfair Display,serif",fontSize:22,fontWeight:700,marginBottom:4}}>🌿 Jeya Lakshmi</div>
+            <div style={{color:"#86efac",fontWeight:700,marginBottom:12}}>Fresh Mart</div>
+            <p style={{fontSize:14,opacity:.8,lineHeight:1.8}}>Farm-fresh produce delivered to your doorstep. Quality you can taste.</p>
+            <div style={{display:"flex",gap:10,marginTop:16}}>
+              {["📘","📸","🐦","▶️"].map((s,i)=><div key={i} style={{width:36,height:36,background:"rgba(255,255,255,.15)",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",fontSize:18,transition:"all .2s"}}>{s}</div>)}
+            </div>
+          </div>
+          <div>
+            <h4 style={{fontWeight:800,marginBottom:16,color:"#86efac"}}>Quick Links</h4>
+            {[["home","Home"],["products","Shop"],["about","About"],["contact","Contact"]].map(([p,l])=>(
+              <div key={p} style={{padding:"5px 0",fontSize:14,opacity:.8,cursor:"pointer",transition:"opacity .2s"}} onClick={()=>nav(p)}>{l}</div>
+            ))}
+          </div>
+          <div>
+            <h4 style={{fontWeight:800,marginBottom:16,color:"#86efac"}}>Categories</h4>
+            {["Fruits","Vegetables","Coconut Products","Organic Seeds"].map(c=>(
+              <div key={c} style={{padding:"5px 0",fontSize:14,opacity:.8}}>{c}</div>
+            ))}
+          </div>
+          <div>
+            <h4 style={{fontWeight:800,marginBottom:16,color:"#86efac"}}>Contact</h4>
+            <div style={{fontSize:14,opacity:.8,lineHeight:2}}>
+              📱 +91 80723 77478<br/>
+              📧 info@jeyalakshmifresh.com<br/>
+              🏠 Coimbatore, Tamil Nadu<br/>
+              ⏰ Mon–Sat: 6AM – 8PM
+            </div>
+          </div>
+        </div>
+        <div style={{borderTop:"1px solid rgba(255,255,255,.15)",paddingTop:20,display:"flex",justifyContent:"space-between",flexWrap:"wrap",gap:10,fontSize:13,opacity:.7}}>
+          <span>© 2026 Jeya Lakshmi Fresh Mart. All rights reserved.</span>
+          <span>Made with 💚 in Tamil Nadu, India</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function WhatsAppFloat(){
+  return(
+    <a href="https://wa.me/918072377478" target="_blank" rel="noreferrer" className="whatsapp-float" title="Chat on WhatsApp" aria-label="Chat on WhatsApp">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+      </svg>
+    </a>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

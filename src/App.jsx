@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppFloat from './components/WhatsAppFloat';
@@ -13,6 +13,50 @@ import ContactPage from './pages/ContactPage';
 import AdminPortal from './pages/AdminPortal';
 import { PRODUCTS } from './data/mockData';
 
+// ── Push Notification Component ──────────────────────────────────────────────
+function PushNotification({ notifications, onDismiss }) {
+  if (!notifications.length) return null;
+  return (
+    <div style={{
+      position: "fixed",
+      top: 90,
+      right: 20,
+      zIndex: 9998,
+      display: "flex",
+      flexDirection: "column",
+      gap: 10,
+      maxWidth: 340
+    }}>
+      {notifications.map(n => (
+        <div
+          key={n.id}
+          className="bounce-in"
+          style={{
+            background: "#fff",
+            border: "2px solid var(--green-soft)",
+            borderLeft: "5px solid var(--green)",
+            borderRadius: 16,
+            padding: "14px 18px",
+            boxShadow: "0 8px 30px rgba(22,163,74,0.18)",
+            display: "flex",
+            gap: 12,
+            alignItems: "flex-start",
+            cursor: "pointer"
+          }}
+          onClick={() => onDismiss(n.id)}
+        >
+          <div style={{ fontSize: 28, flexShrink: 0 }}>{n.icon}</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: 800, fontSize: 13, color: "var(--green-dark)", marginBottom: 3 }}>{n.title}</div>
+            <div style={{ fontSize: 12, color: "var(--gray600)", lineHeight: 1.5 }}>{n.message}</div>
+            <div style={{ fontSize: 10, color: "var(--gray600)", marginTop: 4, opacity: 0.7 }}>Tap to dismiss</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState([]);
@@ -20,6 +64,8 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [adminLogged, setAdminLogged] = useState(false);
   const [adminPage, setAdminPage] = useState("dashboard");
+  const [pushNotifications, setPushNotifications] = useState([]);
+  const orderStatusRef = useRef(null);
   
   const [orders, setOrders] = useState([
     { id: "JL001", customer: "Priya Rajan", items: ["Alphonso Mango x2", "Coconut Oil x1"], total: 640, status: 2, date: "12 Mar 2026" },
@@ -35,6 +81,67 @@ export default function App() {
     setToast(msg);
     setTimeout(() => setToast(null), 3000);
   };
+
+  // ── Review callback ──────────────────────────────────────────────────────
+  const addProductReview = (productId, review) => {
+    setProducts(prev => prev.map(p => {
+      if (p.id !== productId) return p;
+      const newReviews = [review, ...(p.reviews || [])];
+      const avgRating = parseFloat(
+        (newReviews.reduce((sum, r) => sum + r.rating, 0) / newReviews.length).toFixed(1)
+      );
+      return { ...p, reviews: newReviews, rating: avgRating };
+    }));
+  };
+
+  // ── Push notification helper ─────────────────────────────────────────────
+  const addPushNotification = (icon, title, message) => {
+    const id = Date.now();
+    setPushNotifications(prev => [...prev, { id, icon, title, message }]);
+    // auto-dismiss after 8 seconds
+    setTimeout(() => {
+      setPushNotifications(prev => prev.filter(n => n.id !== id));
+    }, 8000);
+  };
+
+  const dismissNotification = (id) => {
+    setPushNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  // ── Background order status simulation ──────────────────────────────────
+  useEffect(() => {
+    if (!myOrder) return;
+
+    // Clear previous interval
+    if (orderStatusRef.current) clearInterval(orderStatusRef.current);
+
+    const STATUS_MESSAGES = [
+      { icon: "📦", title: "Order Packed!", message: `Your order #${myOrder.id} has been packed and is ready for dispatch!` },
+      { icon: "🚚", title: "On the Way!", message: `Driver Ramesh Kumar has picked up your order #${myOrder.id}. ETA: 30 mins!` },
+      { icon: "🏠", title: "Delivered! 🎉", message: `Order #${myOrder.id} has been delivered. Enjoy your fresh produce!` }
+    ];
+
+    let step = myOrder.status;
+
+    orderStatusRef.current = setInterval(() => {
+      if (step >= 3) {
+        clearInterval(orderStatusRef.current);
+        return;
+      }
+      step++;
+      const notif = STATUS_MESSAGES[step - 1];
+      if (notif) {
+        addPushNotification(notif.icon, notif.title, notif.message);
+      }
+      // Update order status in list
+      setOrders(prev => prev.map(o =>
+        o.id === myOrder.id ? { ...o, status: step } : o
+      ));
+      setMyOrder(prev => prev ? { ...prev, status: step } : prev);
+    }, 20000); // Every 20 seconds
+
+    return () => clearInterval(orderStatusRef.current);
+  }, [myOrder?.id]);
 
   const addToCart = (prod, qty = 1) => {
     setCart(prev => {
@@ -60,6 +167,11 @@ export default function App() {
       {page !== "admin" && (
         <Navbar nav={nav} page={page} cartCount={cartCount} />
       )}
+
+      {/* Push Notifications (shown on all non-admin pages) */}
+      {page !== "admin" && (
+        <PushNotification notifications={pushNotifications} onDismiss={dismissNotification} />
+      )}
       
       {page === "home" && (
         <HomePage 
@@ -83,9 +195,10 @@ export default function App() {
       
       {page === "detail" && selectedProduct && (
         <ProductDetailPage 
-          product={selectedProduct} 
+          product={products.find(p => p.id === selectedProduct.id) || selectedProduct}
           addToCart={addToCart} 
-          nav={nav} 
+          nav={nav}
+          addProductReview={addProductReview}
         />
       )}
       

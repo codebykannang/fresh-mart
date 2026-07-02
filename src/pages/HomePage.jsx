@@ -2,6 +2,60 @@ import React, { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import { REVIEWS } from '../data/mockData';
 
+// ── Auto-Sliding Hero Image Carousel ─────────────────────────────────────────
+const HERO_SLIDES = [
+  { img: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80", label: "Fresh Fruits 🍎" },
+  { img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&q=80", label: "Farm Vegetables 🥦" },
+  { img: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=600&q=80", label: "Organic Produce 🌿" },
+  { img: "https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=600&q=80", label: "Tropical Coconut 🥥" },
+];
+
+function HeroImageSlider() {
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setSlide(s => (s + 1) % HERO_SLIDES.length), 3500);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <>
+      {HERO_SLIDES.map((s, i) => (
+        <img
+          key={i}
+          src={s.img}
+          alt={s.label}
+          style={{
+            width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover",
+            boxShadow: "0 20px 60px rgba(22,163,74,.3)", border: "6px solid #fff",
+            position: i === 0 ? "relative" : "absolute",
+            top: 0, left: 0,
+            opacity: slide === i ? 1 : 0,
+            transition: "opacity 1s ease-in-out",
+          }}
+        />
+      ))}
+      {/* Slide indicator dots */}
+      <div style={{
+        position: "absolute", bottom: "-6%", left: "50%", transform: "translateX(-50%)",
+        display: "flex", gap: 8, zIndex: 4
+      }}>
+        {HERO_SLIDES.map((_, i) => (
+          <span
+            key={i}
+            onClick={() => setSlide(i)}
+            style={{
+              width: slide === i ? 20 : 8, height: 8, borderRadius: 50,
+              background: slide === i ? "var(--green)" : "rgba(22,163,74,.3)",
+              cursor: "pointer", transition: "all .3s"
+            }}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
 export default function HomePage({ nav, products, addToCart, setSelectedProduct }) {
   const featured = products.slice(0, 4);
   const [activeReview, setActiveReview] = useState(0);
@@ -39,10 +93,10 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct 
             </div>
           </div>
           
-          <div className="fade-in-right" style={{ position: "relative", display: "flex", justifySelf: "center", justifyContent: "center", alignItems: "center", width: "100%", maxWidth: 400, aspectRatio: "1 / 1", margin: "0 auto" }}>
+          <div className="hero-image-wrapper fade-in-right">
             <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: "radial-gradient(circle,rgba(34,197,94,.15) 0%,rgba(251,191,36,.1) 100%)", position: "absolute" }} />
             <div className="float" style={{ position: "relative", zIndex: 2, width: "85%", height: "85%" }}>
-              <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=500&q=80" alt="Fresh Fruits" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", boxShadow: "0 20px 60px rgba(22,163,74,.3)", border: "6px solid #fff" }} />
+              <HeroImageSlider />
             </div>
             {[["🥭", "top:-5%", "right:-5%"], ["🍋", "bottom:5%", "left:-5%"], ["🥥", "top:50%", "left:-10%"], ["🌿", "bottom:10%", "right:-10%"]].map(([e, t, l], i) => {
               const posStyle = {
@@ -78,10 +132,10 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct 
           </div>
           <div className="grid-4">
             {[
-              { cat: "Fruits", emoji: "🍎", color: "#fef9c3", border: "#fbbf24", img: "/img/mango.png" },
-              { cat: "Vegetables", emoji: "🥦", color: "#dcfce7", border: "#4ade80", img: "/img/brinjal.png" },
+              { cat: "Fruits", emoji: "🍎", color: "#fef9c3", border: "#fbbf24", img: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&q=80" },
+              { cat: "Vegetables", emoji: "🥦", color: "#dcfce7", border: "#4ade80", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80" },
               { cat: "Coconut", emoji: "🥥", color: "#f0fdf4", border: "#86efac", img: "/img/coconut.png" },
-              { cat: "Seeds", emoji: "🌱", color: "#f7fee7", border: "#a3e635", img: "https://loremflickr.com/400/400/seeds,farm/all" },
+              { cat: "Seeds", emoji: "🌱", color: "#f7fee7", border: "#a3e635", img: "/img/seeds.jpg" },
             ].map(c => (
               <div key={c.cat} className="card-3d" onClick={() => nav("products")} style={{ cursor: "pointer" }}>
                 <div className="card-3d-inner" style={{ background: c.color, borderRadius: 20, border: `2px solid ${c.border}`, overflow: "hidden", padding: "0 0 16px" }}>

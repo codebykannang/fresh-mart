@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ORDER_STATUSES } from '../data/mockData';
+import GPSTracker from '../components/GPSTracker';
 
 export default function TrackingPage({ myOrder, orders, nav }) {
   const [trackId, setTrackId] = useState("");
@@ -83,8 +84,13 @@ export default function TrackingPage({ myOrder, orders, nav }) {
               </div>
             </div>
 
+            {/* GPS Live Tracking Map */}
+            <div style={{ marginBottom: 24 }}>
+              <GPSTracker order={found} />
+            </div>
+
             {/* Items Card */}
-            <div style={{ background: "#fff", borderRadius: 20, padding: 24, boxShadow: "0 4px 16px rgba(0,0,0,.06)" }}>
+            <div style={{ background: "#fff", borderRadius: 20, padding: 24, boxShadow: "0 4px 16px rgba(0,0,0,.06)", marginBottom: 24 }}>
               <h3 style={{ fontWeight: 800, marginBottom: 12 }}>Ordered Items</h3>
               {found.items.map((item, i) => (
                 <div key={i} style={{ padding: "10px 0", borderBottom: "1px solid #f0fdf4", fontSize: 15, color: "var(--gray600)", display: "flex", alignItems: "center", gap: 8 }}>

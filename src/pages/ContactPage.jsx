@@ -56,11 +56,11 @@ export default function ContactPage({ nav, showToast }) {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Your Name *</label>
-                  <input className="form-input" placeholder="Suriya Kumar" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                  <input className="form-input" placeholder="your name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label">Phone Number</label>
-                  <input className="form-input" placeholder="+91 80723 77478" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+                  <input className="form-input" placeholder="+91 9876543210" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
                 </div>
               </div>
 

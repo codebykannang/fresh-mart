@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { COUPONS } from '../data/mockData';
 
 const PAYMENT_METHODS = [
@@ -77,7 +77,7 @@ function DeliveryMapSelector({ onPinSelect }) {
                   stroke={isSelected ? "var(--green-dark)" : "#94a3b8"}
                   strokeWidth={isSelected ? 2.5 : 1.5}
                   style={{ transition: "all 0.2s", filter: isSelected ? "drop-shadow(0 4px 8px rgba(22,163,74,0.4))" : "none" }}
-                  onMouseEnter={e => setTooltip({ zone, x: zone.x + zone.w / 2, y: zone.y - 10 })}
+                  onMouseEnter={() => setTooltip({ zone, x: zone.x + zone.w / 2, y: zone.y - 10 })}
                   onMouseLeave={() => setTooltip(null)}
                 />
                 <text
@@ -156,7 +156,7 @@ function DeliveryMapSelector({ onPinSelect }) {
 }
 
 // ── Coupon Input ─────────────────────────────────────────────────────────────
-function CouponInput({ cartTotal, shipping, onApply }) {
+function CouponInput({ onApply }) {
   const [code, setCode] = useState("");
   const [applied, setApplied] = useState(null);
   const [error, setError] = useState("");
@@ -246,7 +246,7 @@ function CouponInput({ cartTotal, shipping, onApply }) {
 }
 
 // ── Main Checkout Page ───────────────────────────────────────────────────────
-export default function CheckoutPage({ cart, cartTotal, nav, setMyOrder, setCart, showToast, orders, setOrders }) {
+export default function CheckoutPage({ cart, cartTotal, nav, setMyOrder, setCart, showToast, setOrders }) {
   const [form, setForm] = useState({ name: "", phone: "", address: "", pincode: "", payment: "cod", lat: null, lng: null });
   const [locLoading, setLocLoading] = useState(false);
   const [placed, setPlaced] = useState(false);

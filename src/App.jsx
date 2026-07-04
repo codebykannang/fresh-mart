@@ -1,17 +1,34 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
-import ProductDetailPage from './pages/ProductDetailPage';
 import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
-import TrackingPage from './pages/TrackingPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
-import AdminPortal from './pages/AdminPortal';
+import WishlistPage from './pages/WishlistPage';
 import { PRODUCTS } from './data/mockData';
+import useLocalStorage from './hooks/useLocalStorage';
+
+// Heavier / less-frequently-visited pages are code-split into their own
+// chunks so the initial bundle users download on first load is smaller.
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage'));
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
+const TrackingPage = lazy(() => import('./pages/TrackingPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const AdminPortal = lazy(() => import('./pages/AdminPortal'));
+
+function PageLoader() {
+  return (
+    <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div className="spinner" style={{
+        width: 44, height: 44, borderRadius: "50%",
+        border: "4px solid rgba(16,185,129,0.15)", borderTopColor: "var(--green)",
+        animation: "spin 0.8s linear infinite"
+      }} />
+    </div>
+  );
+}
 
 // ── Push Notification Component ──────────────────────────────────────────────
 function PushNotification({ notifications, onDismiss }) {
@@ -59,23 +76,38 @@ function PushNotification({ notifications, onDismiss }) {
 
 export default function App() {
   const [page, setPage] = useState("home");
-  const [cart, setCart] = useState([]);
+  // Cart, orders, last-placed order and wishlist persist to localStorage —
+  // refreshing the page or closing the tab no longer wipes them out.
+  const [cart, setCart] = useLocalStorage("jl_cart", []);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [toast, setToast] = useState(null);
   const [adminLogged, setAdminLogged] = useState(false);
   const [adminPage, setAdminPage] = useState("dashboard");
   const [pushNotifications, setPushNotifications] = useState([]);
+  const [wishlist, setWishlist] = useLocalStorage("jl_wishlist", []);
   const orderStatusRef = useRef(null);
   
-  const [orders, setOrders] = useState([
+  const [orders, setOrders] = useLocalStorage("jl_orders", [
     { id: "JL001", customer: "Priya Rajan", items: ["Alphonso Mango x2", "Coconut Oil x1"], total: 640, status: 2, date: "12 Mar 2026" },
     { id: "JL002", customer: "Karthik S", items: ["Fresh Lemon x1", "Tender Coconut x3"], total: 145, status: 3, date: "13 Mar 2026" },
     { id: "JL003", customer: "Meenakshi D", items: ["Organic Tomato x2", "Organic Spinach Seeds x1"], total: 105, status: 0, date: "15 Mar 2026" },
   ]);
   
   const [filterCat, setFilterCat] = useState("All");
-  const [myOrder, setMyOrder] = useState(null);
+  const [myOrder, setMyOrder] = useLocalStorage("jl_myOrder", null);
   const [products, setProducts] = useState(PRODUCTS);
+
+  const toggleWishlist = (product) => {
+    setWishlist(prev => {
+      const exists = prev.some(p => p.id === product.id);
+      if (exists) {
+        showToast(`Removed ${product.name} from wishlist`);
+        return prev.filter(p => p.id !== product.id);
+      }
+      showToast(`❤️ ${product.name} added to wishlist`);
+      return [...prev, product];
+    });
+  };
 
   const showToast = (msg) => {
     setToast(msg);
@@ -141,6 +173,7 @@ export default function App() {
     }, 20000); // Every 20 seconds
 
     return () => clearInterval(orderStatusRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myOrder?.id]);
 
   const addToCart = (prod, qty = 1) => {
@@ -165,7 +198,7 @@ export default function App() {
   return (
     <div>
       {page !== "admin" && (
-        <Navbar nav={nav} page={page} cartCount={cartCount} />
+        <Navbar nav={nav} page={page} cartCount={cartCount} wishlistCount={wishlist.length} />
       )}
 
       {/* Push Notifications (shown on all non-admin pages) */}
@@ -179,6 +212,8 @@ export default function App() {
           products={products} 
           addToCart={addToCart} 
           setSelectedProduct={setSelectedProduct} 
+          wishlist={wishlist}
+          toggleWishlist={toggleWishlist}
         />
       )}
       
@@ -190,15 +225,33 @@ export default function App() {
           setSelectedProduct={setSelectedProduct} 
           filterCat={filterCat} 
           setFilterCat={setFilterCat} 
+          wishlist={wishlist}
+          toggleWishlist={toggleWishlist}
         />
       )}
       
       {page === "detail" && selectedProduct && (
-        <ProductDetailPage 
-          product={products.find(p => p.id === selectedProduct.id) || selectedProduct}
-          addToCart={addToCart} 
+        <Suspense fallback={<PageLoader />}>
+          <ProductDetailPage 
+            product={products.find(p => p.id === selectedProduct.id) || selectedProduct}
+            addToCart={addToCart} 
+            nav={nav}
+            addProductReview={addProductReview}
+            wishlist={wishlist}
+            toggleWishlist={toggleWishlist}
+            products={products}
+            setSelectedProduct={setSelectedProduct}
+          />
+        </Suspense>
+      )}
+
+      {page === "wishlist" && (
+        <WishlistPage
+          wishlist={wishlist}
+          toggleWishlist={toggleWishlist}
+          addToCart={addToCart}
           nav={nav}
-          addProductReview={addProductReview}
+          setSelectedProduct={setSelectedProduct}
         />
       )}
       
@@ -213,50 +266,60 @@ export default function App() {
       )}
       
       {page === "checkout" && (
-        <CheckoutPage 
-          cart={cart} 
-          cartTotal={cartTotal} 
-          nav={nav} 
-          setMyOrder={setMyOrder} 
-          setCart={setCart} 
-          showToast={showToast} 
-          orders={orders} 
-          setOrders={setOrders} 
-        />
+        <Suspense fallback={<PageLoader />}>
+          <CheckoutPage 
+            cart={cart} 
+            cartTotal={cartTotal} 
+            nav={nav} 
+            setMyOrder={setMyOrder} 
+            setCart={setCart} 
+            showToast={showToast} 
+            orders={orders} 
+            setOrders={setOrders} 
+          />
+        </Suspense>
       )}
       
       {page === "tracking" && (
-        <TrackingPage 
-          myOrder={myOrder} 
-          orders={orders} 
-          nav={nav} 
-        />
+        <Suspense fallback={<PageLoader />}>
+          <TrackingPage 
+            myOrder={myOrder} 
+            orders={orders} 
+            nav={nav} 
+          />
+        </Suspense>
       )}
       
       {page === "about" && (
-        <AboutPage />
+        <Suspense fallback={<PageLoader />}>
+          <AboutPage />
+        </Suspense>
       )}
       
       {page === "contact" && (
-        <ContactPage 
-          nav={nav} 
-          showToast={showToast} 
-        />
+        <Suspense fallback={<PageLoader />}>
+          <ContactPage 
+            nav={nav} 
+            showToast={showToast} 
+          />
+        </Suspense>
       )}
       
       {page === "admin" && (
-        <AdminPortal 
-          adminLogged={adminLogged} 
-          setAdminLogged={setAdminLogged} 
-          adminPage={adminPage} 
-          setAdminPage={setAdminPage} 
-          products={products} 
-          setProducts={setProducts} 
-          orders={orders} 
-          setOrders={setOrders} 
-          nav={nav} 
-          showToast={showToast} 
-        />
+        <Suspense fallback={<PageLoader />}>
+          <AdminPortal 
+            adminLogged={adminLogged} 
+            setAdminLogged={setAdminLogged} 
+            adminPage={adminPage} 
+            setAdminPage={setAdminPage} 
+            products={products} 
+            setProducts={setProducts} 
+            orders={orders} 
+            setOrders={setOrders} 
+            nav={nav} 
+            showToast={showToast} 
+          />
+        </Suspense>
       )}
       
       {page !== "admin" && <Footer nav={nav} />}

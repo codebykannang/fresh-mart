@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function GPSTracker({ order, onClose }) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0); // 0 to 100%
-  const [gpsLogs, setGpsLogs] = useState([]);
   
   // Base coordinates for simulation (Coimbatore, Tamil Nadu area)
   const warehouseLat = 11.0184;
@@ -45,20 +44,17 @@ export default function GPSTracker({ order, onClose }) {
     return () => clearInterval(interval);
   }, [isPlaying, progress]);
 
-  // Generate logs based on progress
-  useEffect(() => {
-    const logs = [
-      { p: 0, text: "📦 Order packed and assigned to delivery executive Ramesh Kumar." },
-      { p: 15, text: "🚚 Package picked up from Coimbatore Warehouse (11.0184° N, 76.9740° E)." },
-      { p: 40, text: "🚦 Passed Avinashi Road signal. Driver speed stable at 30 km/h." },
-      { p: 70, text: "🏍️ Navigating through residential sector. Distance remaining: 1.2 km." },
-      { p: 95, text: "🏡 Driver is in your street. Arriving in 1 minute!" },
-      { p: 100, text: "✅ Package delivered successfully. Thank you for shopping with Fresh Mart!" }
-    ];
+  // Generate logs derived from progress
+  const logsList = [
+    { p: 0, text: "📦 Order packed and assigned to delivery executive Ramesh Kumar." },
+    { p: 15, text: "🚚 Package picked up from Coimbatore Warehouse (11.0184° N, 76.9740° E)." },
+    { p: 40, text: "🚦 Passed Avinashi Road signal. Driver speed stable at 30 km/h." },
+    { p: 70, text: "🏍️ Navigating through residential sector. Distance remaining: 1.2 km." },
+    { p: 95, text: "🏡 Driver is in your street. Arriving in 1 minute!" },
+    { p: 100, text: "✅ Package delivered successfully. Thank you for shopping with Fresh Mart!" }
+  ];
 
-    const currentLogs = logs.filter(l => progress >= l.p);
-    setGpsLogs(currentLogs.reverse());
-  }, [progress]);
+  const gpsLogs = logsList.filter(l => progress >= l.p).reverse();
 
   // SVG route details
   // Warehouse: (50, 250) -> Mid 1: (150, 180) -> Mid 2: (280, 180) -> Customer: (350, 80)

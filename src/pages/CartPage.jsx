@@ -1,4 +1,3 @@
-import React from 'react';
 
 export default function CartPage({ cart, removeFromCart, updateQty, cartTotal, nav }) {
   if (cart.length === 0) {

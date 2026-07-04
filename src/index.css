@@ -1,21 +1,33 @@
 :root {
-  --green: #16a34a;
-  --green-light: #22c55e;
-  --green-dark: #14532d;
-  --green-soft: #dcfce7;
+  --green: #10b981;
+  --green-light: #34d399;
+  --green-dark: #064e3b;
+  --green-deep: #022c22;
+  --green-soft: #f0fdf4;
   --yellow: #fbbf24;
-  --orange: #fb923c;
+  --orange: #f59e0b;
   --red: #ef4444;
   --pink: #ec4899;
   --purple: #a855f7;
-  --sky: #38bdf8;
+  --sky: #06b6d4;
   --white: #fff;
-  --gray50: #f9fafb;
-  --gray100: #f3f4f6;
-  --gray200: #e5e7eb;
-  --gray600: #4b5563;
-  --gray800: #1f2937;
-  --shadow: 0 4px 24px rgba(22, 163, 74, 0.15);
+  --gray50: #f8fafc;
+  --gray100: #f1f5f9;
+  --gray200: #e2e8f0;
+  --gray600: #64748b;
+  --gray800: #0f172a;
+  --shadow: 0 12px 30px rgba(6, 78, 59, 0.08);
+
+  /* Glassmorphism Variables */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.45);
+  --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  --glass-dark-bg: rgba(2, 44, 34, 0.75);
+  --glass-dark-border: rgba(255, 255, 255, 0.08);
+  --glass-dark-shadow: 0 24px 50px rgba(0, 0, 0, 0.25);
+  --gold-accent: #f59e0b;
+  --gold-dark: #d97706;
+  --gold-glow: 0 0 20px rgba(245, 158, 11, 0.35);
 }
 
 * {
@@ -30,7 +42,12 @@ html {
 
 body {
   font-family: 'Nunito', sans-serif;
-  background: #fff;
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(rgba(148, 163, 184, 0.1) 1.5px, transparent 1.5px), 
+    radial-gradient(rgba(148, 163, 184, 0.1) 1.5px, #f8fafc 1.5px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
   color: var(--gray800);
   overflow-x: hidden;
 }
@@ -1132,4 +1149,566 @@ input[type='range'] {
   .checkout-summary-sticky {
     position: static !important;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   3D MOTION & PREMIUM STYLING SYSTEM
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Glassmorphism Cards & Panels */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-panel:hover {
+  border-color: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 30px 60px rgba(6, 78, 59, 0.08);
+}
+
+.glass-panel-dark {
+  background: var(--glass-dark-bg);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--glass-dark-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-dark-shadow);
+}
+
+/* Three.js Canvas Container */
+.three-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.three-canvas-interactive {
+  pointer-events: auto !important;
+}
+
+/* Dynamic Ambient Glow Spots */
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  mix-blend-mode: multiply;
+  animation: blobFloat 12s ease-in-out infinite alternate;
+}
+
+.glow-blob-green {
+  background: radial-gradient(circle, var(--green-light) 0%, transparent 70%);
+  width: 500px;
+  height: 500px;
+  top: -10%;
+  right: -5%;
+  animation-delay: 0s;
+}
+
+.glow-blob-gold {
+  background: radial-gradient(circle, var(--yellow) 0%, transparent 70%);
+  width: 400px;
+  height: 400px;
+  bottom: 10%;
+  left: -5%;
+  animation-delay: 4s;
+}
+
+@keyframes blobFloat {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate(40px, -60px) scale(1.15) rotate(90deg);
+  }
+  100% {
+    transform: translate(-30px, 40px) scale(0.9) rotate(180deg);
+  }
+}
+
+/* Interactive 3D Card Hover Styles */
+.tilt-card-wrapper {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.15s ease-out;
+  position: relative;
+}
+
+.tilt-card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+}
+
+.tilt-card-content {
+  transform: translateZ(30px); /* Lift children in 3D space */
+}
+
+/* Glare shine layer overlay */
+.card-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.18) 0%, transparent 60%);
+  z-index: 5;
+  mix-blend-mode: overlay;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+.tilt-card-wrapper:hover .card-glare {
+  opacity: 1;
+}
+
+/* Premium buttons and glows */
+.btn-premium {
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  color: #ffffff;
+  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 24px rgba(6, 78, 59, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.5px;
+}
+
+.btn-premium:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.35), 0 0 0 4px rgba(16, 185, 129, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.btn-premium::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 20%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%);
+  transform: skewX(-25deg);
+  transition: 0.75s;
+}
+
+.btn-premium:hover::after {
+  left: 120%;
+}
+
+.btn-premium-secondary {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  color: var(--green-dark);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s ease;
+}
+
+.btn-premium-secondary:hover {
+  background: #ffffff;
+  border-color: rgba(16, 185, 129, 0.4);
+  color: var(--green);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Premium Inputs */
+.premium-input {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 2px solid var(--gray200) !important;
+  border-radius: 14px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+
+.premium-input:focus {
+  border-color: var(--green) !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12), inset 0 1px 2px rgba(0,0,0,0.05) !important;
+  background: #fff !important;
+}
+
+/* Animated Leaf Particle System (Fallback or Background Decor) */
+.organic-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.floating-leaf {
+  position: absolute;
+  font-size: 24px;
+  animation: leafFloat 15s linear infinite;
+  opacity: 0.25;
+}
+
+@keyframes leafFloat {
+  0% {
+    transform: translateY(110vh) translateX(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-10vh) translateX(100px) rotate(360deg);
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   V2 — MARKETPLACE REDESIGN (Amazon/DMart inspired)
+   Full-bleed hero imagery, offer strips, category rails, deal cards,
+   quantity steppers, and scroll-driven 3D reveal support.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ---- FULL-BLEED HERO WITH REAL PHOTO BACKGROUND ---- */
+.hero-photo-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero-photo-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 130%;
+  top: -10%;
+  z-index: -2;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-photo-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(2,20,15,0.55) 0%, rgba(2,25,18,0.72) 45%, rgba(2,20,15,0.92) 100%),
+    linear-gradient(100deg, rgba(2,44,34,0.88) 0%, rgba(2,44,34,0.55) 35%, rgba(2,44,34,0.15) 65%, transparent 100%);
+}
+
+.hero-photo-section .hero-title,
+.hero-photo-section h1 {
+  color: #fff !important;
+}
+
+.hero-photo-section p {
+  color: rgba(255,255,255,0.86) !important;
+}
+
+/* ---- SCROLLING OFFER STRIP (DMart-style ticker) ---- */
+.offer-strip {
+  background: linear-gradient(90deg, var(--green-dark), var(--green), var(--green-dark));
+  background-size: 200% 100%;
+  animation: offerStripShift 8s ease infinite;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 9px 0;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  position: relative;
+  z-index: 100;
+}
+
+@keyframes offerStripShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.offer-strip-track {
+  display: inline-flex;
+  animation: marquee 22s linear infinite;
+}
+
+.offer-strip:hover .offer-strip-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.offer-strip-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 28px;
+  border-right: 1px solid rgba(255,255,255,0.25);
+}
+
+/* ---- CATEGORY ICON RAIL (Amazon-style) ---- */
+.category-rail {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 6px 4px 18px;
+  scrollbar-width: none;
+}
+
+.category-rail::-webkit-scrollbar { display: none; }
+
+.category-pill-3d {
+  flex: 0 0 auto;
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+.category-pill-3d:hover {
+  transform: translateY(-6px) scale(1.05);
+}
+
+.category-pill-3d-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 10px 24px rgba(6,78,59,0.16), 0 0 0 3px rgba(16,185,129,0.12);
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.category-pill-3d:hover .category-pill-3d-circle {
+  box-shadow: 0 16px 32px rgba(6,78,59,0.28), 0 0 0 4px rgba(16,185,129,0.35);
+}
+
+.category-pill-3d-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- DEAL / DISCOUNT CARD ---- */
+.deal-rail {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 8px 4px 24px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.deal-rail::-webkit-scrollbar { display: none; }
+
+.deal-card {
+  flex: 0 0 auto;
+  width: 210px;
+  scroll-snap-align: start;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  color: #fff;
+  font-weight: 900;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(239,68,68,0.35);
+  transform: rotate(2deg);
+}
+
+.price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.price-mrp {
+  font-size: 13px;
+  color: var(--gray600);
+  text-decoration: line-through;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.price-now {
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--green-dark);
+}
+
+/* ---- QUANTITY STEPPER (Blinkit/DMart-style) ---- */
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  background: var(--green);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+}
+
+.qty-stepper button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.qty-stepper button:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.qty-stepper span {
+  min-width: 24px;
+  text-align: center;
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+}
+
+/* ---- DELIVERY / TRUST BADGE ROW ---- */
+.trust-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(16,185,129,0.12);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(6,78,59,0.08);
+}
+
+.trust-strip-item {
+  background: rgba(255,255,255,0.92);
+  padding: 20px 12px;
+  text-align: center;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.trust-strip-item:hover {
+  background: #fff;
+  transform: translateY(-3px);
+}
+
+/* ---- PRODUCT IMAGE ZOOM PANEL (real dept.-store style) ---- */
+.zoom-media {
+  overflow: hidden;
+  position: relative;
+  border-radius: inherit;
+}
+
+.zoom-media img {
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+.zoom-media:hover img {
+  transform: scale(1.12) rotate(0.5deg);
+}
+
+/* ---- MOBILE HERO / RESPONSIVE FIXES ---- */
+@media (max-width: 768px) {
+  .hero-photo-section {
+    min-height: 92vh;
+    padding-top: 90px;
+    align-items: flex-start;
+  }
+  .hero-photo-bg {
+    background-attachment: scroll;
+  }
+  .category-pill-3d {
+    width: 78px;
+  }
+  .category-pill-3d-circle {
+    width: 62px;
+    height: 62px;
+  }
+  .deal-card {
+    width: 168px;
+  }
+  .trust-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-photo-section {
+    min-height: 88vh;
+  }
+  .offer-strip-item {
+    padding: 0 18px;
+    font-size: 12px;
+  }
+}
+
+/* ---- SCROLL PROGRESS-DRIVEN 3D TILT UTILITY CLASSES ---- */
+.reveal-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-wrap {
+  perspective: 1400px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ---- IMAGE SKELETON SHIMMER (Amazon/DMart-style loading state) ---- */
+.img-skeleton-wrap {
+  position: relative;
+  overflow: hidden;
+  background: #eef2f0;
+}
+
+.img-skeleton-wrap.is-loading::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #eef2f0 25%, #f7faf8 50%, #eef2f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.4s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.img-skeleton-wrap img {
+  position: relative;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.img-skeleton-wrap img.img-loaded {
+  opacity: 1;
+  z-index: 2;
 }

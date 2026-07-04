@@ -1,4 +1,3 @@
-import React from 'react';
 
 const WHATSAPP_NUMBER = "918072377478"; // +91 80723 77478
 

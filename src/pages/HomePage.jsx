@@ -1,209 +1,337 @@
-import React, { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
-import { REVIEWS } from '../data/mockData';
+import ThreeDScene from '../components/ThreeDScene';
+import TiltCard from '../components/TiltCard';
+import ScrollReveal from '../components/ScrollReveal';
+import Parallax from '../components/Parallax';
 
-// ── Auto-Sliding Hero Image Carousel ─────────────────────────────────────────
-const HERO_SLIDES = [
-  { img: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600&q=80", label: "Fresh Fruits 🍎" },
-  { img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&q=80", label: "Farm Vegetables 🥦" },
-  { img: "https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=600&q=80", label: "Organic Produce 🌿" },
-  { img: "https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=600&q=80", label: "Tropical Coconut 🥥" },
+const OFFERS = [
+  "🎉 FLAT 10% OFF on your first order — use code FRESH10",
+  "🚚 FREE delivery on orders above ₹499",
+  "🥭 Alphonso Mango Season is here — order now",
+  "🌿 100% Organic • Zero Chemical Farming",
+  "⚡ Same-day dispatch for orders before 10 AM",
+  "💚 500+ Partner Farms across Tamil Nadu",
 ];
 
-function HeroImageSlider() {
-  const [slide, setSlide] = useState(0);
+const CATEGORIES = [
+  { cat: "Fruits", emoji: "🍎", img: "/img/mango.png" },
+  { cat: "Vegetables", emoji: "🥦", img: "/img/brinjal.png" },
+  { cat: "Coconut", emoji: "🥥", img: "/img/coconut.png" },
+  { cat: "Seeds", emoji: "🌱", img: "/img/seeds.jpg" },
+  { cat: "Combos", emoji: "🧺", img: "/img/basket.png" },
+];
 
-  useEffect(() => {
-    const t = setInterval(() => setSlide(s => (s + 1) % HERO_SLIDES.length), 3500);
-    return () => clearInterval(t);
-  }, []);
+const TRUST = [
+  { icon: "🌾", title: "Direct Farm Sourcing", desc: "Bypasses cold storages and middlemen. Straight from Bodinayakanur orchards." },
+  { icon: "🌿", title: "Certified Organic", desc: "Zero synthetic chemical agents. Safe, wholesome nutrition for your family." },
+  { icon: "🚚", title: "Express Dispatch", desc: "Dispatch within 3 hours. Order by 10 AM for same-day doorstep delivery." },
+  { icon: "💚", title: "Freshness Promise", desc: "Not happy with quality? Instant return or exchange — no questions asked." },
+];
 
-  return (
-    <>
-      {HERO_SLIDES.map((s, i) => (
-        <img
-          key={i}
-          src={s.img}
-          alt={s.label}
-          style={{
-            width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover",
-            boxShadow: "0 20px 60px rgba(22,163,74,.3)", border: "6px solid #fff",
-            position: i === 0 ? "relative" : "absolute",
-            top: 0, left: 0,
-            opacity: slide === i ? 1 : 0,
-            transition: "opacity 1s ease-in-out",
-          }}
-        />
-      ))}
-      {/* Slide indicator dots */}
-      <div style={{
-        position: "absolute", bottom: "-6%", left: "50%", transform: "translateX(-50%)",
-        display: "flex", gap: 8, zIndex: 4
-      }}>
-        {HERO_SLIDES.map((_, i) => (
-          <span
-            key={i}
-            onClick={() => setSlide(i)}
-            style={{
-              width: slide === i ? 20 : 8, height: 8, borderRadius: 50,
-              background: slide === i ? "var(--green)" : "rgba(22,163,74,.3)",
-              cursor: "pointer", transition: "all .3s"
-            }}
-          />
-        ))}
-      </div>
-    </>
-  );
-}
-
-export default function HomePage({ nav, products, addToCart, setSelectedProduct }) {
+export default function HomePage({ nav, products, addToCart, setSelectedProduct, wishlist = [], toggleWishlist }) {
   const featured = products.slice(0, 4);
-  const [activeReview, setActiveReview] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setActiveReview(a => (a + 1) % REVIEWS.length);
-    }, 4000);
-    return () => clearInterval(t);
-  }, []);
+  const deals = products.slice(0, 8);
 
   return (
-    <div>
-      {/* HERO */}
-      <section className="hero-section hero-bg" style={{ minHeight: "100vh", paddingTop: 80 }}>
-        <div className="container hero-grid">
-          <div className="fade-in-left">
-            <div className="badge badge-green" style={{ marginBottom: 16, fontSize: 13 }}><span className="leaf-sway">🌿</span> 100% Farm Fresh • No Middlemen</div>
-            <h1 className="hero-title">Fresh Farm Products<br /><span>Delivered to Your</span><br />Doorstep 🚚</h1>
-            <p style={{ fontSize: 17, color: "var(--gray600)", margin: "24px 0", lineHeight: 1.8 }}>
-              Direct from our farms in Tamil Nadu. Hand-picked, naturally grown, packed with love.
-              Experience the true taste of fresh harvest every single day.
-            </p>
-            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginTop: 28 }}>
-              <button className="btn-primary pulse-btn" style={{ fontSize: 16, padding: "14px 32px" }} onClick={() => nav("products")}>🛍 Shop Now</button>
-              <button className="btn-secondary" style={{ fontSize: 16 }} onClick={() => nav("products")}>🥭 Order Fresh Fruits</button>
+    <div style={{ position: "relative", overflow: "hidden" }}>
+      <div className="glow-blob glow-blob-green" />
+      <div className="glow-blob glow-blob-gold" />
+
+      {/* HERO — FULL BLEED REAL PHOTO BACKGROUND (Amazon/DMart banner style) */}
+      <section className="hero-photo-section" style={{ paddingTop: 110 }}>
+        <Parallax speed={0.28} className="hero-photo-bg" style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=1920&q=80')"
+        }} />
+        <div className="hero-photo-overlay" />
+
+        <div className="container hero-grid" style={{ position: "relative", zIndex: 2 }}>
+
+          <div className="fade-in-left" style={{ position: "relative", zIndex: 10 }}>
+            <div className="badge badge-green" style={{ marginBottom: 20, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(6px)", color: "#fff", border: "1px solid rgba(255,255,255,0.25)" }}>
+              <span className="leaf-sway">🌿</span> 100% Farm Fresh • TVKK Nagar, Bodinayakanur
             </div>
-            <div style={{ display: "flex", gap: 20, marginTop: 40, flexWrap: "wrap", justifyContent: "center" }}>
-              {[["🌾", "500+ Farms"], ["🚚", "Same Day"], ["🌿", "100% Organic"]].map(([e, l]) => (
-                <div key={l} style={{ textAlign: "center" }} className="fade-in-up">
-                  <div style={{ fontSize: 24 }} className={e === "🌿" || e === "🌾" ? "leaf-sway" : ""}>{e}</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "var(--green-dark)" }}>{l}</div>
+
+            <h1 className="hero-title" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, textShadow: "0 4px 24px rgba(0,0,0,0.35)" }}>
+              Premium Farm <br />
+              <span style={{ background: "linear-gradient(135deg, #6ee7b7, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Fresh Produce</span> <br />
+              Delivered Daily 🚚
+            </h1>
+
+            <p style={{ fontSize: 17, margin: "24px 0", lineHeight: 1.8, fontWeight: 500, maxWidth: 520 }}>
+              Directly from our organic orchards in Bodinayakanur, Theni. Hand-picked at peak ripeness, naturally farmed, and shipped straight to your table.
+            </p>
+
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 32 }}>
+              <button
+                className="btn-premium"
+                style={{ fontSize: 16, padding: "14px 36px", borderRadius: 16, cursor: "pointer" }}
+                onClick={() => nav("products")}
+              >
+                🛍 Shop Fresh Produce
+              </button>
+              <button
+                className="btn-premium-secondary"
+                style={{ fontSize: 16, padding: "14px 32px", borderRadius: 16, cursor: "pointer", background: "rgba(255,255,255,0.12)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)" }}
+                onClick={() => nav("products")}
+              >
+                🥭 Alphonso Mangoes
+              </button>
+            </div>
+
+            <div style={{ display: "flex", gap: 32, marginTop: 48, flexWrap: "wrap" }}>
+              {[["🌾", "500+ Partner Farms"], ["🚚", "Lightning Delivery"], ["🌿", "Zero Chemical Farming"]].map(([e, l]) => (
+                <div key={l} style={{ display: "flex", alignItems: "center", gap: 10 }} className="fade-in-up">
+                  <div style={{ fontSize: 32 }} className={e === "🌿" || e === "🌾" ? "leaf-sway" : ""}>{e}</div>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: "#fff", lineHeight: 1.3, textShadow: "0 2px 8px rgba(0,0,0,0.4)" }}>{l}</div>
                 </div>
               ))}
             </div>
           </div>
-          
-          <div className="hero-image-wrapper fade-in-right">
-            <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: "radial-gradient(circle,rgba(34,197,94,.15) 0%,rgba(251,191,36,.1) 100%)", position: "absolute" }} />
-            <div className="float" style={{ position: "relative", zIndex: 2, width: "85%", height: "85%" }}>
-              <HeroImageSlider />
+
+          {/* Desktop Three.js interactive canvas */}
+          <div className="hero-image-wrapper fade-in-right mobile-hide" style={{ height: "100%", minHeight: "450px", position: "relative" }}>
+            <ThreeDScene />
+
+            <div className="glass-panel" style={{ position: "absolute", top: "10%", right: "5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.85)" }}>
+              <span style={{ fontSize: 24 }}>🥭</span>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 900, color: "var(--green-dark)" }}>Alphonso</div>
+                <div style={{ fontSize: 10, color: "var(--gray600)" }}>Top Rated</div>
+              </div>
             </div>
-            {[["🥭", "top:-5%", "right:-5%"], ["🍋", "bottom:5%", "left:-5%"], ["🥥", "top:50%", "left:-10%"], ["🌿", "bottom:10%", "right:-10%"]].map(([e, t, l], i) => {
-              const posStyle = {
-                position: "absolute",
-                width: "clamp(40px, 12vw, 56px)",
-                height: "clamp(40px, 12vw, 56px)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "clamp(20px, 6vw, 28px)",
-                animationDelay: `${i * .5}s`,
-                boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-                zIndex: 3
-              };
-              posStyle[t.split(":")[0]] = t.split(":")[1];
-              posStyle[l.split(":")[0]] = l.split(":")[1];
-              return (
-                <div key={i} className="float glass-card" style={posStyle}>
-                  {e}
+
+            <div className="glass-panel" style={{ position: "absolute", bottom: "15%", left: "5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.85)" }}>
+              <span style={{ fontSize: 24 }}>🥥</span>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 900, color: "var(--green-dark)" }}>Tender Coconut</div>
+                <div style={{ fontSize: 10, color: "var(--green)" }}>100% Organic</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile hero — full-width real photo card, replaces heavy 3D canvas */}
+          <div className="mobile-show" style={{ display: "none" }}>
+            <ScrollReveal direction="zoom">
+              <div style={{
+                borderRadius: 24, overflow: "hidden", height: 220, position: "relative",
+                boxShadow: "0 20px 50px rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.2)"
+              }}>
+                <img
+                  src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=900&q=80"
+                  alt="Fresh farm produce basket"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* OFFER STRIP — DMart-style scrolling ticker */}
+      <div className="offer-strip">
+        <div className="offer-strip-track">
+          {[...OFFERS, ...OFFERS].map((o, i) => (
+            <span className="offer-strip-item" key={i}>{o}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* CATEGORY RAIL — Amazon-style round icons */}
+      <section className="section" style={{ paddingBottom: 10, position: "relative", zIndex: 3 }}>
+        <div className="container">
+          <ScrollReveal direction="up">
+            <h2 style={{ fontSize: 22, fontWeight: 900, color: "var(--green-dark)", marginBottom: 16 }}>Shop by Category</h2>
+          </ScrollReveal>
+          <div className="category-rail">
+            {CATEGORIES.map((c, i) => (
+              <ScrollReveal key={c.cat} direction="zoom" delay={i * 0.06}>
+                <div className="category-pill-3d" onClick={() => nav("products")}>
+                  <div className="category-pill-3d-circle">
+                    <img src={c.img} alt={c.cat} loading="lazy" />
+                  </div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: "var(--green-dark)", textAlign: "center" }}>
+                    {c.emoji} {c.cat}
+                  </div>
                 </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TODAY'S DEALS — horizontal scroll deal cards */}
+      <section className="section" style={{ background: "rgba(16, 185, 129, 0.03)", position: "relative", zIndex: 3 }}>
+        <div className="container">
+          <ScrollReveal direction="left">
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+              <h2 style={{ fontSize: 22, fontWeight: 900, color: "var(--green-dark)" }}>⚡ Today's Deals</h2>
+              <span onClick={() => nav("products")} style={{ fontSize: 13, fontWeight: 800, color: "var(--green)", cursor: "pointer" }}>See all →</span>
+            </div>
+          </ScrollReveal>
+
+          <div className="deal-rail">
+            {deals.map((p, i) => {
+              const mrp = Math.round(p.price * 1.22);
+              const discount = Math.round(100 - (p.price / mrp) * 100);
+              return (
+                <ScrollReveal key={p.id} direction="up" delay={i * 0.05} className="deal-card">
+                  <TiltCard maxTilt={8} style={{ borderRadius: 20, height: "100%" }}>
+                    <div
+                      className="glass-panel"
+                      onClick={() => { setSelectedProduct(p); nav("detail"); }}
+                      style={{ position: "relative", overflow: "hidden", cursor: "pointer", padding: 0, borderRadius: 20 }}
+                    >
+                      <span className="discount-badge">{discount}% OFF</span>
+                      <div className="zoom-media" style={{ height: 130 }}>
+                        <img src={p.img} alt={p.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      </div>
+                      <div style={{ padding: 14 }}>
+                        <div style={{ fontWeight: 800, fontSize: 13, color: "var(--green-dark)", marginBottom: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {p.emoji} {p.name}
+                        </div>
+                        <div className="price-row">
+                          <span className="price-now">₹{p.price}</span>
+                          <span className="price-mrp">₹{mrp}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </TiltCard>
+                </ScrollReveal>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* CATEGORIES */}
-      <section className="section" style={{ background: "#f0fdf4" }}>
+      {/* TRUST STRIP */}
+      <section className="section" style={{ paddingTop: 10, position: "relative", zIndex: 3 }}>
         <div className="container">
-          <div style={{ textAlign: "center" }}>
-            <h2 className="section-title">Shop by Category</h2>
-            <p className="section-subtitle">Find exactly what you need from our fresh farm collections</p>
-          </div>
-          <div className="grid-4">
-            {[
-              { cat: "Fruits", emoji: "🍎", color: "#fef9c3", border: "#fbbf24", img: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&q=80" },
-              { cat: "Vegetables", emoji: "🥦", color: "#dcfce7", border: "#4ade80", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80" },
-              { cat: "Coconut", emoji: "🥥", color: "#f0fdf4", border: "#86efac", img: "/img/coconut.png" },
-              { cat: "Seeds", emoji: "🌱", color: "#f7fee7", border: "#a3e635", img: "/img/seeds.jpg" },
-            ].map(c => (
-              <div key={c.cat} className="card-3d" onClick={() => nav("products")} style={{ cursor: "pointer" }}>
-                <div className="card-3d-inner" style={{ background: c.color, borderRadius: 20, border: `2px solid ${c.border}`, overflow: "hidden", padding: "0 0 16px" }}>
-                  <img src={c.img} alt={c.cat} style={{ width: "100%", height: 160, objectFit: "cover" }} />
-                  <div style={{ padding: "12px 16px 0", textAlign: "center" }}>
-                    <div style={{ fontSize: 32, marginBottom: 4 }}>{c.emoji}</div>
-                    <div style={{ fontFamily: "Playfair Display,serif", fontWeight: 700, fontSize: 20, color: "var(--green-dark)" }}>{c.cat}</div>
-                    <div style={{ fontSize: 12, color: "var(--gray600)", marginTop: 4 }}>{products.filter(p => p.cat === c.cat).length} products</div>
-                  </div>
+          <ScrollReveal direction="up">
+            <div className="trust-strip">
+              {[["🚚", "Free Delivery ₹499+"], ["⚡", "Same-Day Dispatch"], ["🔄", "Easy Returns"], ["🔒", "Secure Payments"]].map(([icon, label]) => (
+                <div className="trust-strip-item" key={label}>
+                  <div style={{ fontSize: 26, marginBottom: 6 }}>{icon}</div>
+                  <div style={{ fontSize: 11, fontWeight: 800, color: "var(--green-dark)" }}>{label}</div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS */}
-      <section className="section">
+      {/* FEATURED PRODUCTS SECTION */}
+      <section className="section" style={{ position: "relative", zIndex: 3 }}>
         <div className="container">
-          <div style={{ textAlign: "center" }}>
-            <h2 className="section-title">Featured Products</h2>
-            <p className="section-subtitle">Hand-picked freshness, delivered straight from our farms</p>
-          </div>
+          <ScrollReveal direction="up">
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <h2 className="section-title" style={{ color: "var(--green-dark)", fontWeight: 900, fontSize: "2.5rem" }}>Featured Freshness</h2>
+              <p className="section-subtitle" style={{ color: "var(--gray600)", fontWeight: 500 }}>Harvested this morning, ready for same-day delivery</p>
+            </div>
+          </ScrollReveal>
+
           <div className="grid-4">
             {featured.map((p, i) => (
-              <ProductCard key={p.id} product={p} addToCart={addToCart} nav={nav} setSelectedProduct={setSelectedProduct} delay={i * .1} />
+              <ScrollReveal key={p.id} direction="up" delay={i * 0.08}>
+                <ProductCard product={p} addToCart={addToCart} nav={nav} setSelectedProduct={setSelectedProduct} wishlist={wishlist} toggleWishlist={toggleWishlist} />
+              </ScrollReveal>
             ))}
           </div>
-          <div style={{ textAlign: "center", marginTop: 40 }}>
-            <button className="btn-primary" style={{ fontSize: 16, padding: "14px 40px" }} onClick={() => nav("products")}>View All Products →</button>
+
+          <div style={{ textAlign: "center", marginTop: 48 }}>
+            <button
+              className="btn-premium"
+              style={{ fontSize: 16, padding: "14px 44px", borderRadius: 16 }}
+              onClick={() => nav("products")}
+            >
+              View Full catalog →
+            </button>
           </div>
         </div>
       </section>
 
-      {/* WHY US */}
-      <section className="section" style={{ background: "linear-gradient(135deg,#f0fdf4,#fef9c3)" }}>
+      {/* WHY US SECTION */}
+      <section className="section" style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.03) 0%, rgba(245,158,11,0.03) 100%)", position: "relative", zIndex: 3 }}>
         <div className="container">
-          <div style={{ textAlign: "center" }}>
-            <h2 className="section-title">Why Jaya Lakshmi?</h2>
-            <p className="section-subtitle">We deliver more than just products – we deliver trust</p>
-          </div>
+          <ScrollReveal direction="up">
+            <div style={{ textAlign: "center", marginBottom: 48 }}>
+              <h2 className="section-title" style={{ color: "var(--green-dark)", fontWeight: 900, fontSize: "2.5rem" }}>Why Choose Jaya Lakshmi?</h2>
+              <p className="section-subtitle" style={{ color: "var(--gray600)", fontWeight: 500 }}>The direct-from-farm difference you can taste and feel</p>
+            </div>
+          </ScrollReveal>
+
           <div className="grid-4">
-            {[
-              { icon: "🌾", title: "Farm Direct", desc: "No middlemen. Products travel directly from our farms to your home.", color: "#dcfce7" },
-              { icon: "🌿", title: "100% Organic", desc: "Grown without harmful chemicals. Safe for your family.", color: "#fef9c3" },
-              { icon: "🚚", title: "Same Day Delivery", desc: "Order before 10 AM and get it delivered the same day.", color: "#ffedd5" },
-              { icon: "💚", title: "Quality Guaranteed", desc: "Not satisfied? We replace or refund – no questions asked.", color: "#f0f9ff" },
-            ].map(w => (
-              <div key={w.title} className="tilt" style={{ background: w.color, padding: 28, borderRadius: 20, textAlign: "center" }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>{w.icon}</div>
-                <h3 style={{ fontFamily: "Playfair Display,serif", fontSize: 20, color: "var(--green-dark)", marginBottom: 8 }}>{w.title}</h3>
-                <p style={{ fontSize: 14, color: "var(--gray600)", lineHeight: 1.7 }}>{w.desc}</p>
-              </div>
+            {TRUST.map((w, i) => (
+              <ScrollReveal key={w.title} direction={i % 2 === 0 ? "left" : "right"} delay={i * 0.08}>
+                <TiltCard maxTilt={8} style={{ borderRadius: 24, height: "100%" }}>
+                  <div
+                    className="glass-panel"
+                    style={{
+                      padding: 32,
+                      textAlign: "center",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center"
+                    }}
+                  >
+                    <div style={{ fontSize: 52, marginBottom: 16 }} className="leaf-sway">{w.icon}</div>
+                    <h3 style={{ fontSize: 20, color: "var(--green-dark)", marginBottom: 12, fontWeight: 900 }}>{w.title}</h3>
+                    <p style={{ fontSize: 14, color: "var(--gray600)", lineHeight: 1.7, fontWeight: 500 }}>{w.desc}</p>
+                  </div>
+                </TiltCard>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA BANNER */}
-      <section style={{ background: "linear-gradient(135deg,#14532d,#16a34a,#22c55e)", padding: "60px 20px", textAlign: "center" }}>
-        <div className="float" style={{ fontSize: 56, marginBottom: 16 }}>🌾</div>
-        <h2 style={{ fontFamily: "Playfair Display,serif", fontSize: "clamp(28px,4vw,48px)", color: "#fff", marginBottom: 12 }}>Ready for Farm-Fresh Goodness?</h2>
-        <p style={{ color: "rgba(255,255,255,.85)", fontSize: 17, marginBottom: 28 }}>Join 2,000+ happy families ordering fresh produce every week</p>
-        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-          <button style={{ background: "#fff", color: "var(--green-dark)", border: "none", padding: "14px 36px", borderRadius: 50, fontFamily: "Nunito", fontWeight: 800, fontSize: 16, cursor: "pointer" }} onClick={() => nav("products")}>🛍 Order Now</button>
-          <button style={{ background: "transparent", color: "#fff", border: "2px solid rgba(255,255,255,.7)", padding: "14px 36px", borderRadius: 50, fontFamily: "Nunito", fontWeight: 800, fontSize: 16, cursor: "pointer" }} onClick={() => nav("contact")}>📞 Contact Us</button>
-        </div>
-      </section>
+      <ScrollReveal direction="zoom">
+        <section
+          className="glass-panel-dark"
+          style={{
+            margin: "80px 24px",
+            padding: "80px 40px",
+            textAlign: "center",
+            position: "relative",
+            zIndex: 3,
+            overflow: "hidden",
+            borderRadius: 32,
+            border: "1px solid rgba(255,255,255,0.1)",
+            boxShadow: "0 40px 80px rgba(0,0,0,0.3)"
+          }}
+        >
+          <div style={{ position: "absolute", top: "-50%", right: "-10%", width: 500, height: 500, background: "radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 60%)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", bottom: "-50%", left: "-10%", width: 500, height: 500, background: "radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 60%)", pointerEvents: "none" }} />
+
+          <div className="float" style={{ fontSize: 64, marginBottom: 20 }}>🌾</div>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 4vw, 54px)", color: "#fff", marginBottom: 16, fontWeight: 900 }}>
+            Taste Real Farm Freshness Today
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 18, marginBottom: 36, maxWidth: 600, margin: "0 auto 36px", fontWeight: 500 }}>
+            Join over 2,000+ local families in Bodinayakanur and surrounding areas receiving delicious fresh boxes weekly.
+          </p>
+
+          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              className="btn-premium"
+              style={{ padding: "16px 40px", borderRadius: 16, fontSize: 16, cursor: "pointer" }}
+              onClick={() => nav("products")}
+            >
+              🛍 Start Shopping Now
+            </button>
+            <button
+              className="btn-premium-secondary"
+              style={{ padding: "16px 40px", borderRadius: 16, fontSize: 16, cursor: "pointer", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff" }}
+              onClick={() => nav("contact")}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
+              onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+            >
+              📞 Get Support
+            </button>
+          </div>
+        </section>
+      </ScrollReveal>
     </div>
   );
 }

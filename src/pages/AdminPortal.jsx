@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { ORDER_STATUSES, PRODUCTS } from '../data/mockData';
+import { useState, useRef } from 'react';
+import { ORDER_STATUSES } from '../data/mockData';
 import GPSTracker from '../components/GPSTracker';
 
 // ── Product Image Upload Field (file upload + URL, with live preview) ───────
@@ -265,7 +265,7 @@ function AdminDashboard({ orders, products, setTrackingOrder }) {
       </div>
       
       {/* Interactive Analytics Charts */}
-      <AnalyticsCharts products={products} orders={orders} />
+      <AnalyticsCharts products={products} />
       
       <div className="grid-2" style={{ gap: 24 }}>
         <div className="admin-card">
@@ -318,7 +318,7 @@ function AdminDashboard({ orders, products, setTrackingOrder }) {
 }
 
 // Vector Interactive Analytics SVG Charts Component
-function AnalyticsCharts({ products, orders }) {
+function AnalyticsCharts({ products }) {
   const [hoveredSales, setHoveredSales] = useState(null);
 
   // Weekly Revenue mock telemetry

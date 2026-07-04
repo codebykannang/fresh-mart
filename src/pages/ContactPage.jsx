@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function ContactPage({ nav, showToast }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
@@ -88,6 +88,14 @@ export default function ContactPage({ nav, showToast }) {
                 disabled={sending}
               >
                 {sending ? "📡 Sending..." : "📤 Send Message"}
+              </button>
+
+              <button
+                className="btn-secondary"
+                style={{ width: "100%", padding: "12px", fontSize: 14, justifyContent: "center", marginTop: 10 }}
+                onClick={() => nav("products")}
+              >
+                🛍 Continue Shopping
               </button>
 
               <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>

@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import ProductCard from '../components/ProductCard';
-import ThreeDScene from '../components/ThreeDScene';
 import TiltCard from '../components/TiltCard';
 import ScrollReveal from '../components/ScrollReveal';
 import Parallax from '../components/Parallax';
@@ -29,7 +29,14 @@ const TRUST = [
 ];
 
 export default function HomePage({ nav, products, addToCart, setSelectedProduct, wishlist = [], toggleWishlist }) {
-  const featured = products.slice(0, 4);
+  const [activeFeaturedCat, setActiveFeaturedCat] = useState("All");
+
+  const featuredCategories = ["All", "Fruits", "Vegetables", "Coconut", "Seeds", "Combos"];
+
+  const featured = activeFeaturedCat === "All"
+    ? products.slice(0, 4)
+    : products.filter(p => p.cat === activeFeaturedCat).slice(0, 4);
+
   const deals = products.slice(0, 8);
 
   return (
@@ -38,10 +45,18 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
       <div className="glow-blob glow-blob-gold" />
 
       {/* HERO — FULL BLEED REAL PHOTO BACKGROUND (Amazon/DMart banner style) */}
-      <section className="hero-photo-section" style={{ paddingTop: 110 }}>
-        <Parallax speed={0.28} className="hero-photo-bg" style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=1920&q=80')"
-        }} />
+      <section className="hero-photo-section" style={{ paddingTop: 95 }}>
+        <Parallax speed={0.28} className="hero-photo-bg">
+          <video
+            className="hero-photo-video"
+            src="/videos/hero-mango-orchard.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+          />
+        </Parallax>
         <div className="hero-photo-overlay" />
 
         <div className="container hero-grid" style={{ position: "relative", zIndex: 2 }}>
@@ -51,7 +66,7 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
               <span className="leaf-sway">🌿</span> 100% Farm Fresh • TVKK Nagar, Bodinayakanur
             </div>
 
-            <h1 className="hero-title" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, textShadow: "0 4px 24px rgba(0,0,0,0.35)" }}>
+            <h1 className="hero-title" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, textShadow: "0 4px 24px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.5)" }}>
               Premium Farm <br />
               <span style={{ background: "linear-gradient(135deg, #6ee7b7, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Fresh Produce</span> <br />
               Delivered Daily 🚚
@@ -88,11 +103,33 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
             </div>
           </div>
 
-          {/* Desktop Three.js interactive canvas */}
-          <div className="hero-image-wrapper fade-in-right mobile-hide" style={{ height: "100%", minHeight: "450px", position: "relative" }}>
-            <ThreeDScene />
-
-            <div className="glass-panel" style={{ position: "absolute", top: "10%", right: "5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.85)" }}>
+          {/* Desktop floating badges over the hero video (3D model replaced with a beautiful farm basket image) */}
+          <div className="hero-image-wrapper fade-in-right mobile-hide" style={{ height: "100%", minHeight: "450px", position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{
+              position: "absolute",
+              width: 320,
+              height: 320,
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(16,185,129,0.35) 0%, transparent 70%)",
+              filter: "blur(24px)",
+              zIndex: 0
+            }} />
+            <img
+              src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=900&q=80"
+              alt="Fresh Farm Produce"
+              style={{
+                width: "100%",
+                maxWidth: "340px",
+                height: "auto",
+                borderRadius: "32px",
+                boxShadow: "0 24px 60px rgba(0,0,0,0.45)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                transform: "rotate(-2deg)",
+                zIndex: 1
+              }}
+              className="float"
+            />
+            <div className="glass-panel" style={{ position: "absolute", top: "10%", right: "-5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.9)", boxShadow: "0 8px 32px rgba(6,78,59,0.15)", border: "1px solid rgba(16,185,129,0.2)" }}>
               <span style={{ fontSize: 24 }}>🥭</span>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 900, color: "var(--green-dark)" }}>Alphonso</div>
@@ -100,7 +137,7 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
               </div>
             </div>
 
-            <div className="glass-panel" style={{ position: "absolute", bottom: "15%", left: "5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.85)" }}>
+            <div className="glass-panel" style={{ position: "absolute", bottom: "15%", left: "-5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.9)", boxShadow: "0 8px 32px rgba(6,78,59,0.15)", border: "1px solid rgba(16,185,129,0.2)" }}>
               <span style={{ fontSize: 24 }}>🥥</span>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 900, color: "var(--green-dark)" }}>Tender Coconut</div>
@@ -109,16 +146,19 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
             </div>
           </div>
 
-          {/* Mobile hero — full-width real photo card, replaces heavy 3D canvas */}
-          <div className="mobile-show" style={{ display: "none" }}>
+          {/* Mobile hero — full-width loop video card, replaces heavy 3D canvas */}
+          <div className="mobile-show" style={{ display: "none", marginTop: 24 }}>
             <ScrollReveal direction="zoom">
               <div style={{
-                borderRadius: 24, overflow: "hidden", height: 220, position: "relative",
+                borderRadius: 24, overflow: "hidden", height: 280, position: "relative",
                 boxShadow: "0 20px 50px rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.2)"
               }}>
-                <img
-                  src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=900&q=80"
-                  alt="Fresh farm produce basket"
+                <video
+                  src="/videos/hero-mango-orchard.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               </div>
@@ -179,19 +219,52 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
                     <div
                       className="glass-panel"
                       onClick={() => { setSelectedProduct(p); nav("detail"); }}
-                      style={{ position: "relative", overflow: "hidden", cursor: "pointer", padding: 0, borderRadius: 20 }}
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        cursor: "pointer",
+                        padding: 0,
+                        borderRadius: 20,
+                        background: "rgba(255,255,255,0.75)",
+                        border: "1px solid rgba(16,185,129,0.12)",
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column"
+                      }}
                     >
                       <span className="discount-badge">{discount}% OFF</span>
                       <div className="zoom-media" style={{ height: 130 }}>
                         <img src={p.img} alt={p.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       </div>
-                      <div style={{ padding: 14 }}>
-                        <div style={{ fontWeight: 800, fontSize: 13, color: "var(--green-dark)", marginBottom: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <div style={{ padding: 14, display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
+                        <div style={{ fontWeight: 800, fontSize: 13, color: "var(--green-dark)", marginBottom: 8, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {p.emoji} {p.name}
                         </div>
-                        <div className="price-row">
-                          <span className="price-now">₹{p.price}</span>
-                          <span className="price-mrp">₹{mrp}</span>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                          <div className="price-row" style={{ flexDirection: "column", gap: 2, alignItems: "flex-start" }}>
+                            <span className="price-now" style={{ fontSize: 16 }}>₹{p.price}</span>
+                            <span className="price-mrp" style={{ fontSize: 11 }}>₹{mrp}</span>
+                          </div>
+                          <button
+                            className="btn-premium"
+                            style={{
+                              padding: "6px 12px",
+                              fontSize: 11,
+                              borderRadius: 10,
+                              minWidth: 60,
+                              height: 30,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              cursor: "pointer"
+                            }}
+                            onClick={e => {
+                              e.stopPropagation();
+                              addToCart(p, 1);
+                            }}
+                          >
+                            🛒 Add
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -223,18 +296,51 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
       <section className="section" style={{ position: "relative", zIndex: 3 }}>
         <div className="container">
           <ScrollReveal direction="up">
-            <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ textAlign: "center", marginBottom: 32 }}>
               <h2 className="section-title" style={{ color: "var(--green-dark)", fontWeight: 900, fontSize: "2.5rem" }}>Featured Freshness</h2>
-              <p className="section-subtitle" style={{ color: "var(--gray600)", fontWeight: 500 }}>Harvested this morning, ready for same-day delivery</p>
+              <p className="section-subtitle" style={{ color: "var(--gray600)", fontWeight: 500, marginBottom: 24 }}>Harvested this morning, ready for same-day delivery</p>
             </div>
           </ScrollReveal>
 
-          <div className="grid-4">
-            {featured.map((p, i) => (
-              <ScrollReveal key={p.id} direction="up" delay={i * 0.08}>
-                <ProductCard product={p} addToCart={addToCart} nav={nav} setSelectedProduct={setSelectedProduct} wishlist={wishlist} toggleWishlist={toggleWishlist} />
-              </ScrollReveal>
-            ))}
+          {/* Interactive Category Filter Tabs */}
+          <ScrollReveal direction="up">
+            <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 40, flexWrap: "wrap" }}>
+              {featuredCategories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveFeaturedCat(cat)}
+                  style={{
+                    padding: "10px 24px",
+                    borderRadius: "50px",
+                    border: "1px solid",
+                    borderColor: activeFeaturedCat === cat ? "var(--green)" : "rgba(16, 185, 129, 0.15)",
+                    background: activeFeaturedCat === cat ? "var(--green)" : "rgba(16, 185, 129, 0.05)",
+                    color: activeFeaturedCat === cat ? "#fff" : "var(--green-dark)",
+                    fontWeight: "800",
+                    fontSize: 13,
+                    cursor: "pointer",
+                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                    boxShadow: activeFeaturedCat === cat ? "0 8px 20px rgba(16, 185, 129, 0.25)" : "none"
+                  }}
+                >
+                  {cat === "All" ? "⭐ All Produce" : cat}
+                </button>
+              ))}
+            </div>
+          </ScrollReveal>
+
+          <div className="grid-4" style={{ minHeight: featured.length > 0 ? "auto" : "200px" }}>
+            {featured.length > 0 ? (
+              featured.map((p, i) => (
+                <ScrollReveal key={`${activeFeaturedCat}-${p.id}`} direction="up" delay={i * 0.06}>
+                  <ProductCard product={p} addToCart={addToCart} nav={nav} setSelectedProduct={setSelectedProduct} wishlist={wishlist} toggleWishlist={toggleWishlist} />
+                </ScrollReveal>
+              ))
+            ) : (
+              <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "48px 24px", color: "var(--gray600)", fontWeight: 600 }}>
+                🌾 No products found in this category. Check back soon!
+              </div>
+            )}
           </div>
 
           <div style={{ textAlign: "center", marginTop: 48 }}>
@@ -285,53 +391,79 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
         </div>
       </section>
 
-      {/* CTA BANNER */}
-      <ScrollReveal direction="zoom">
-        <section
-          className="glass-panel-dark"
-          style={{
-            margin: "80px 24px",
-            padding: "80px 40px",
-            textAlign: "center",
-            position: "relative",
-            zIndex: 3,
-            overflow: "hidden",
-            borderRadius: 32,
-            border: "1px solid rgba(255,255,255,0.1)",
-            boxShadow: "0 40px 80px rgba(0,0,0,0.3)"
-          }}
+{/* CTA BANNER */}
+<ScrollReveal direction="zoom">
+  <section
+    className="glass-panel-dark"
+    style={{
+      margin: "80px 24px",
+      padding: "80px 40px",
+      textAlign: "center",
+      position: "relative",
+      zIndex: 3,
+      overflow: "hidden",
+      borderRadius: 32,
+      border: "1px solid rgba(255,255,255,0.1)",
+      boxShadow: "0 40px 80px rgba(0,0,0,0.3)"
+    }}
+  >
+    {/* BACKGROUND IMAGE */}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        backgroundImage: "url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        zIndex: 0
+      }}
+    />
+
+    {/* DARK OVERLAY - text readability ku mandatory */}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: "linear-gradient(135deg, rgba(16, 16, 16, 0.85) 0%, rgba(52, 46, 46, 0.31) 100%)",
+        zIndex: 1
+      }}
+    />
+
+    {/* Existing glow blobs - z-index update pannanum */}
+    <div style={{ position: "absolute", top: "-50%", right: "-10%", width: 500, height: 500, background: "radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 60%)", pointerEvents: "none", zIndex: 1 }} />
+    <div style={{ position: "absolute", bottom: "-50%", left: "-10%", width: 500, height: 500, background: "radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 60%)", pointerEvents: "none", zIndex: 1 }} />
+
+    {/* CONTENT - z-index 2 la irukkanum, image + overlay ku mela varum */}
+    <div style={{ position: "relative", zIndex: 2 }}>
+      <div className="float" style={{ fontSize: 64, marginBottom: 20 }}>🌾</div>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 4vw, 54px)", color: "#fff", marginBottom: 16, fontWeight: 900 }}>
+        Taste Real Farm Freshness Today
+      </h2>
+      <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 18, marginBottom: 36, maxWidth: 600, margin: "0 auto 36px", fontWeight: 500 }}>
+        Join over 2,000+ local families in Bodinayakanur and surrounding areas receiving delicious fresh boxes weekly.
+      </p>
+
+      <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+        <button
+          className="btn-premium"
+          style={{ padding: "16px 40px", borderRadius: 16, fontSize: 16, cursor: "pointer" }}
+          onClick={() => nav("products")}
         >
-          <div style={{ position: "absolute", top: "-50%", right: "-10%", width: 500, height: 500, background: "radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 60%)", pointerEvents: "none" }} />
-          <div style={{ position: "absolute", bottom: "-50%", left: "-10%", width: 500, height: 500, background: "radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 60%)", pointerEvents: "none" }} />
-
-          <div className="float" style={{ fontSize: 64, marginBottom: 20 }}>🌾</div>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 4vw, 54px)", color: "#fff", marginBottom: 16, fontWeight: 900 }}>
-            Taste Real Farm Freshness Today
-          </h2>
-          <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 18, marginBottom: 36, maxWidth: 600, margin: "0 auto 36px", fontWeight: 500 }}>
-            Join over 2,000+ local families in Bodinayakanur and surrounding areas receiving delicious fresh boxes weekly.
-          </p>
-
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-            <button
-              className="btn-premium"
-              style={{ padding: "16px 40px", borderRadius: 16, fontSize: 16, cursor: "pointer" }}
-              onClick={() => nav("products")}
-            >
-              🛍 Start Shopping Now
-            </button>
-            <button
-              className="btn-premium-secondary"
-              style={{ padding: "16px 40px", borderRadius: 16, fontSize: 16, cursor: "pointer", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff" }}
-              onClick={() => nav("contact")}
-              onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
-              onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
-            >
-              📞 Get Support
-            </button>
-          </div>
-        </section>
-      </ScrollReveal>
+          🛍 Start Shopping Now
+        </button>
+        <button
+          className="btn-premium-secondary"
+          style={{ padding: "16px 40px", borderRadius: 16, fontSize: 16, cursor: "pointer", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff" }}
+          onClick={() => nav("contact")}
+          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.2)"}
+          onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.1)"}
+        >
+          📞 Get Support
+        </button>
+      </div>
     </div>
+  </section>
+</ScrollReveal>
+         </div>
   );
 }

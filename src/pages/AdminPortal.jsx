@@ -179,8 +179,23 @@ function AdminLogin({ setAdminLogged, nav }) {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#14532d,#16a34a,#22c55e)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div className="bounce-in" style={{ background: "#fff", borderRadius: 28, padding: "clamp(24px, 6vw, 44px)", width: "100%", maxWidth: 400, boxShadow: "0 20px 60px rgba(0,0,0,.2)" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        backgroundImage: "url('https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=1600&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Light green tint so the farm photo stays clearly visible while keeping the card readable */}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(20,83,45,0.55), rgba(22,163,74,0.4), rgba(34,197,94,0.35))" }} />
+      <div className="bounce-in" style={{ position: "relative", zIndex: 1, background: "#fff", borderRadius: 28, padding: "clamp(24px, 6vw, 44px)", width: "100%", maxWidth: 400, boxShadow: "0 20px 60px rgba(0,0,0,.35)" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div style={{ fontSize: 56 }}>🌿</div>
           <h2 style={{ fontFamily: "Playfair Display,serif", color: "var(--green-dark)", fontSize: 26 }}>Admin Portal</h2>

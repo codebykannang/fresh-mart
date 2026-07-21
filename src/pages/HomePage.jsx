@@ -55,28 +55,29 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
             muted
             playsInline
             preload="auto"
+            poster="https://images.unsplash.com/photo-1592417817098-8fd3d9eb14a5?auto=format&fit=crop&w=1200&q=50"
           />
         </Parallax>
         <div className="hero-photo-overlay" />
 
-        <div className="container hero-grid" style={{ position: "relative", zIndex: 2 }}>
+        <div className="container" style={{ position: "relative", zIndex: 2, display: "flex", justifyContent: "center", width: "100%", padding: "40px 20px" }}>
 
-          <div className="fade-in-left" style={{ position: "relative", zIndex: 10 }}>
+          <div className="fade-in-left" style={{ position: "relative", zIndex: 10, maxWidth: "720px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
             <div className="badge badge-green" style={{ marginBottom: 20, fontSize: 13, display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(6px)", color: "#fff", border: "1px solid rgba(255,255,255,0.25)" }}>
               <span className="leaf-sway">🌿</span> 100% Farm Fresh • TVKK Nagar, Bodinayakanur
             </div>
 
-            <h1 className="hero-title" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, textShadow: "0 4px 24px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.5)" }}>
+            <h1 className="hero-title" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, textShadow: "0 4px 24px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.5)", textAlign: "center" }}>
               Premium Farm <br />
               <span style={{ background: "linear-gradient(135deg, #6ee7b7, #34d399)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Fresh Produce</span> <br />
               Delivered Daily 🚚
             </h1>
 
-            <p style={{ fontSize: 17, margin: "24px 0", lineHeight: 1.8, fontWeight: 500, maxWidth: 520 }}>
+            <p style={{ fontSize: 17, margin: "24px 0", lineHeight: 1.8, fontWeight: 500, maxWidth: 580, textAlign: "center" }}>
               Directly from our organic orchards in Bodinayakanur, Theni. Hand-picked at peak ripeness, naturally farmed, and shipped straight to your table.
             </p>
 
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 32 }}>
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 32, justifyContent: "center" }}>
               <button
                 className="btn-premium"
                 style={{ fontSize: 16, padding: "14px 36px", borderRadius: 16, cursor: "pointer" }}
@@ -93,7 +94,7 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
               </button>
             </div>
 
-            <div style={{ display: "flex", gap: 32, marginTop: 48, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 32, marginTop: 48, flexWrap: "wrap", justifyContent: "center" }}>
               {[["🌾", "500+ Partner Farms"], ["🚚", "Lightning Delivery"], ["🌿", "Zero Chemical Farming"]].map(([e, l]) => (
                 <div key={l} style={{ display: "flex", alignItems: "center", gap: 10 }} className="fade-in-up">
                   <div style={{ fontSize: 32 }} className={e === "🌿" || e === "🌾" ? "leaf-sway" : ""}>{e}</div>
@@ -101,68 +102,6 @@ export default function HomePage({ nav, products, addToCart, setSelectedProduct,
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Desktop floating badges over the hero video (3D model replaced with a beautiful farm basket image) */}
-          <div className="hero-image-wrapper fade-in-right mobile-hide" style={{ height: "100%", minHeight: "450px", position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <div style={{
-              position: "absolute",
-              width: 320,
-              height: 320,
-              borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(16,185,129,0.35) 0%, transparent 70%)",
-              filter: "blur(24px)",
-              zIndex: 0
-            }} />
-            <img
-              src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=900&q=80"
-              alt="Fresh Farm Produce"
-              style={{
-                width: "100%",
-                maxWidth: "340px",
-                height: "auto",
-                borderRadius: "32px",
-                boxShadow: "0 24px 60px rgba(0,0,0,0.45)",
-                border: "1px solid rgba(255,255,255,0.25)",
-                transform: "rotate(-2deg)",
-                zIndex: 1
-              }}
-              className="float"
-            />
-            <div className="glass-panel" style={{ position: "absolute", top: "10%", right: "-5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.9)", boxShadow: "0 8px 32px rgba(6,78,59,0.15)", border: "1px solid rgba(16,185,129,0.2)" }}>
-              <span style={{ fontSize: 24 }}>🥭</span>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 900, color: "var(--green-dark)" }}>Alphonso</div>
-                <div style={{ fontSize: 10, color: "var(--gray600)" }}>Top Rated</div>
-              </div>
-            </div>
-
-            <div className="glass-panel" style={{ position: "absolute", bottom: "15%", left: "-5%", padding: "12px 18px", borderRadius: 16, zIndex: 10, display: "flex", alignItems: "center", gap: 10, background: "rgba(255,255,255,0.9)", boxShadow: "0 8px 32px rgba(6,78,59,0.15)", border: "1px solid rgba(16,185,129,0.2)" }}>
-              <span style={{ fontSize: 24 }}>🥥</span>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 900, color: "var(--green-dark)" }}>Tender Coconut</div>
-                <div style={{ fontSize: 10, color: "var(--green)" }}>100% Organic</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile hero — full-width loop video card, replaces heavy 3D canvas */}
-          <div className="mobile-show" style={{ display: "none", marginTop: 24 }}>
-            <ScrollReveal direction="zoom">
-              <div style={{
-                borderRadius: 24, overflow: "hidden", height: 280, position: "relative",
-                boxShadow: "0 20px 50px rgba(0,0,0,0.35)", border: "1px solid rgba(255,255,255,0.2)"
-              }}>
-                <video
-                  src="/videos/hero-mango-orchard.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </div>
-            </ScrollReveal>
           </div>
         </div>
       </section>

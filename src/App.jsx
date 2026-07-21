@@ -76,6 +76,14 @@ function PushNotification({ notifications, onDismiss }) {
 
 export default function App() {
   const [page, setPage] = useState("home");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
   // Cart, orders, last-placed order and wishlist persist to localStorage —
   // refreshing the page or closing the tab no longer wipes them out.
   const [cart, setCart] = useLocalStorage("jl_cart", []);
@@ -194,6 +202,56 @@ export default function App() {
     setPage(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  if (isLoading) {
+    return (
+      <div className="splash-screen" style={{
+        position: "fixed",
+        inset: 0,
+        backgroundImage: "linear-gradient(rgba(2, 20, 15, 0.45), rgba(2, 20, 15, 0.75)), url('https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=1200&q=80')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 100000,
+        color: "#fff"
+      }}>
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 20,
+          background: "rgba(2, 44, 34, 0.45)",
+          backdropFilter: "blur(8px)",
+          padding: "40px 60px",
+          borderRadius: "32px",
+          border: "1px solid rgba(255,255,255,0.15)",
+          boxShadow: "0 24px 50px rgba(0,0,0,0.3)"
+        }}>
+          <div className="leaf-sway" style={{ fontSize: 64 }}>🌿</div>
+          <div style={{ textAlign: "center" }}>
+            <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 900, fontSize: 32, letterSpacing: 1, margin: 0 }}>
+              Jaya Lakshmi
+            </h1>
+            <p style={{ fontSize: 10, color: "#6ee7b7", letterSpacing: "3px", textTransform: "uppercase", margin: "4px 0 0 0", fontWeight: 800 }}>
+              Fresh Mart
+            </p>
+          </div>
+          <div className="spinner" style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            border: "3px solid rgba(255,255,255,0.2)",
+            borderTopColor: "#34d399",
+            animation: "spin 0.8s linear infinite",
+            marginTop: 10
+          }} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
